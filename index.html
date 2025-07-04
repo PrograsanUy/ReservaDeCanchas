@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reserva de Canchas</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Evolventa&display=swap" rel="stylesheet">
+  <style>
+    @font-face {
+      font-family: 'HandelsonSix';
+      src: url('HandelsonSix.otf') format('opentype');
+    }
+    body { font-family: sans-serif; }
+    .bg-overlay {
+      background-color: rgba(0, 0, 0, 0.6);
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 1;
+    }
+    #preview canvas, #preview img {
+      max-width: 100%;
+      height: auto;
+    }
+    @media (max-width: 640px) {
+      #preview canvas, #preview img {
+        max-width: 100% !important;
+        height: auto !important;
+      }
+    }
+  </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col items-center p-4">
+  <div class="w-full max-w-md">
+    <h1 class="text-2xl font-bold text-center mb-4">Generador de Horarios - Canchas</h1>
+
+    <label class="block mb-2 font-medium">Fecha</label>
+    <input id="fecha" type="date" class="w-full border rounded p-2 mb-4" />
+
+    <div class="mb-4">
+      <label class="block mb-2 font-medium">Horarios disponibles</label>
+      <div id="horarios" class="space-y-2"></div>
+    </div>
+
+    <button onclick="generarImagen()" class="w-full bg-blue-600 text-white p-2 rounded font-semibold hover:bg-blue-700">Generar Imagen</button>
+
+    <div id="preview" class="mt-6 flex justify-center items-center">
+      <div id="imagenContainer" style="width: 270px; height: 480px;"></div>
+    </div>
+    <a id="descargar" class="hidden mt-4 block text-center bg-green-600 text-white p-2 rounded font-semibold hover:bg-green-700" download="horarios.png">Descargar Imagen</a>
+  </div>
+
+  <script>
+    function generarHorariosPadel(inicio, fin) {
+      const horarios = [];
+      let [h, m] = inicio.split(":" ).map(Number);
+      const [endH, endM] = fin.split(":" ).map(Number);
+      const totalEndMinutes = endH * 60 + endM;
+
+      while ((h * 60 + m) <= totalEndMinutes) {
+        const horaStr = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')} Hs`;
+        horarios.push(horaStr);
+        m += 30;
+        if (m >= 60) {
+          h += 1;
+          m -= 60;
+        }
+        h += 1;
+      }
+      return horarios;
+    }
+
+    const horariosPorCancha = {
+      'FÚTBOL 5': ["13:00 Hs", "14:00 Hs", "15:00 Hs", "16:00 Hs", "17:00 Hs", "18:00 Hs", "19:00 Hs", "20:00 Hs", "21:00 Hs", "22:00 Hs"],
+      'FÚTBOL 6': ["13:00 Hs", "14:00 Hs", "15:00 Hs", "16:00 Hs", "17:00 Hs", "18:00 Hs", "19:00 Hs", "20:00 Hs", "21:00 Hs", "22:00 Hs"],
+      'FÚTBOL 7': ["13:00 Hs", "14:00 Hs", "15:00 Hs", "16:00 Hs", "17:00 Hs", "18:00 Hs", "19:00 Hs", "20:00 Hs", "21:00 Hs", "22:00 Hs"],
+      'FÚTBOL 8': ["13:00 Hs", "14:00 Hs", "15:00 Hs", "16:00 Hs", "17:00 Hs", "18:00 Hs", "19:00 Hs", "20:00 Hs", "21:00 Hs", "22:00 Hs"],
+      'PÁDEL': generarHorariosPadel("13:00", "22:00")
+    };
+
+    const horariosDiv = document.getElementById("horarios");
+    Object.entries(horariosPorCancha).forEach(([cancha, horarios]) => {
+      const sectionWrapper = document.createElement("div");
+      sectionWrapper.className = "bg-white p-4 rounded shadow";
+
+      const titleWrapper = document.createElement("div");
+      titleWrapper.className = "flex items-center justify-between mb-3";
+
+      const title = document.createElement("h3");
+      title.textContent = cancha;
+      title.className = "font-bold text-[#083560] text-xl";
+
+      const selectAll = document.createElement("button");
+      selectAll.textContent = "Seleccionar todos";
+      selectAll.className = "text-sm text-blue-600 hover:underline";
+      selectAll.onclick = () => {
+        const buttons = sectionWrapper.querySelectorAll("button[data-categoria='" + cancha + "']");
+        buttons.forEach(btn => btn.classList.add("bg-green-400"));
+      };
+
+      titleWrapper.appendChild(title);
+      titleWrapper.appendChild(selectAll);
+      sectionWrapper.appendChild(titleWrapper);
+
+      const section = document.createElement("div");
+      section.className = "grid grid-cols-4 gap-2";
+      horarios.forEach(h => {
+        const btn = document.createElement("button");
+        btn.className = "text-sm bg-gray-200 text-black px-2 py-1 rounded hover:bg-blue-300";
+        btn.textContent = `${cancha} - ${h}`;
+        btn.setAttribute("data-categoria", cancha);
+        btn.onclick = () => btn.classList.toggle("bg-green-400");
+        section.appendChild(btn);
+      });
+
+      sectionWrapper.appendChild(section);
+      horariosDiv.appendChild(sectionWrapper);
+    });
+
+    function getRandomBackground() {
+      const fondos = ["fondos/f1.jpg", "fondos/f2.jpg", "fondos/f3.jpg", "fondos/f4.jpg", "fondos/f5.jpg"];
+      return fondos[Math.floor(Math.random() * fondos.length)];
+    }
+
+    function generarImagen() {
+      const seleccionados = Array.from(document.querySelectorAll("#horarios button.bg-green-400")).map(b => b.textContent);
+
+      const categoriasSeleccionadas = [...new Set(seleccionados.map(txt => txt.split(' - ')[0]))];
+      if (categoriasSeleccionadas.length > 2) {
+        alert("Solo se pueden incluir 2 categorías por imagen");
+        return;
+      }
+
+      const hoy = new Date();
+      const mes = (hoy.getMonth() + 1).toString().padStart(2, '0');
+      const dia = hoy.getDate().toString().padStart(2, '0');
+      const fechaFormateada = `${mes}.${dia}`;
+
+      const container = document.createElement('div');
+      container.style.width = '1080px';
+      container.style.height = '1920px';
+      container.style.position = 'relative';
+      container.style.overflow = 'hidden';
+
+      const fondo = document.createElement('img');
+      fondo.src = getRandomBackground();
+      fondo.style.width = '100%';
+      fondo.style.height = '100%';
+      fondo.style.objectFit = 'cover';
+      fondo.style.position = 'absolute';
+      fondo.style.top = '0';
+      fondo.style.left = '0';
+      container.appendChild(fondo);
+
+      const overlay = document.createElement('div');
+      overlay.className = 'bg-overlay';
+      container.appendChild(overlay);
+
+      const logo = document.createElement('img');
+      logo.src = 'donBalonLogo.png';
+      logo.style.position = 'absolute';
+      logo.style.top = '108px';
+      logo.style.right = '108px';
+      logo.style.width = '100px';
+      logo.style.zIndex = '3';
+      container.appendChild(logo);
+
+      const titulo = document.createElement('div');
+      titulo.style.position = 'absolute';
+      titulo.style.zIndex = '2';
+      titulo.style.color = 'white';
+      titulo.style.top = '300px';
+      titulo.style.left = '0';
+      titulo.style.width = '100%';
+      titulo.style.textAlign = 'center';
+      titulo.innerHTML = `
+        <div style="font-family: 'HandelsonSix', arial; font-size: 115px; font-weight:bold;">TURNOS</div>
+        <div style="font-family: 'Evolventa', sans-serif; font-size: 40px; margin-top: -20px;">DISPONIBLES HOY</div>
+        <div style="font-family: 'Evolventa', sans-serif; font-size: 36px; margin-top: 10px;">${fechaFormateada}</div>
+      `;
+      container.appendChild(titulo);
+
+      const horariosPorCategoria = {};
+      seleccionados.forEach(txt => {
+        const [categoria, hora] = txt.split(' - ');
+        if (!horariosPorCategoria[categoria]) horariosPorCategoria[categoria] = [];
+        horariosPorCategoria[categoria].push(hora);
+      });
+
+      const bloques = document.createElement('div');
+      bloques.style.position = 'absolute';
+      bloques.style.top = '650px';
+      bloques.style.left = '50%';
+      bloques.style.transform = 'translateX(-50%)';
+      bloques.style.display = 'flex';
+      bloques.style.gap = '50px';
+      bloques.style.zIndex = '2';
+
+      categoriasSeleccionadas.forEach(cat => {
+        const div = document.createElement('div');
+        div.style.padding = '0';
+        div.style.borderRadius = '12px';
+        div.style.width = '350px';
+        div.style.textAlign = 'center';
+
+        const title = document.createElement('div');
+        title.textContent = cat;
+        title.style.fontSize = '32px';
+        title.style.color = '#083560';
+        title.style.fontWeight = 'bold';
+        title.style.backgroundColor = 'white';
+        title.style.marginBottom = '20px';
+        title.style.padding = '6px 0';
+        title.style.borderRadius = '8px';
+        div.appendChild(title);
+
+        horariosPorCategoria[cat].forEach(hora => {
+          const p = document.createElement('div');
+          p.textContent = hora;
+          p.style.fontSize = '36px';
+          p.style.marginBottom = '11px';
+          p.style.padding = '8px 0';
+          p.style.backgroundColor = '#083560';
+          p.style.color = 'white';
+          p.style.borderRadius = '8px';
+          div.appendChild(p);
+        });
+
+        bloques.appendChild(div);
+      });
+
+      container.appendChild(bloques);
+
+      document.getElementById('imagenContainer').innerHTML = '';
+      document.getElementById('imagenContainer').appendChild(container.cloneNode(true));
+
+      html2canvas(container, {
+        width: 1080,
+        height: 1920,
+        scale: 1,
+        useCORS: true
+      }).then(canvas => {
+        canvas.toBlob(blob => {
+          const url = URL.createObjectURL(blob);
+          const imgPreview = `<img src="${url}" alt="Imagen generada" class="rounded shadow" style="width: 270px; height: 480px;" />`;
+          document.getElementById('imagenContainer').innerHTML = imgPreview;
+
+          const link = document.getElementById('descargar');
+          link.href = url;
+          link.download = 'horarios.png';
+          link.classList.remove('hidden');
+        }, 'image/png');
+      });
+    }
+  </script>
+</body>
+</html>
