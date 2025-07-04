@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Reserva de Canchas</title>
+  <title>Generador de Horarios - Don Balón</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Evolventa&display=swap" rel="stylesheet">
@@ -20,21 +20,15 @@
       width: 100%; height: 100%;
       z-index: 1;
     }
-    #preview canvas, #preview img {
+    #imagenContainer img {
       max-width: 100%;
       height: auto;
-    }
-    @media (max-width: 640px) {
-      #preview canvas, #preview img {
-        max-width: 100% !important;
-        height: auto !important;
-      }
     }
   </style>
 </head>
 <body class="bg-gray-100 min-h-screen flex flex-col items-center p-4">
   <div class="w-full max-w-md">
-    <h1 class="text-2xl font-bold text-center mb-4">Generador de Horarios - Canchas</h1>
+    <h1 class="text-2xl font-bold text-center mb-4">Generador de Horarios - Don Balón</h1>
 
     <label class="block mb-2 font-medium">Fecha</label>
     <input id="fecha" type="date" class="w-full border rounded p-2 mb-4" />
@@ -49,14 +43,15 @@
     <div id="preview" class="mt-6 flex justify-center items-center">
       <div id="imagenContainer" style="width: 270px; height: 480px;"></div>
     </div>
-    <a id="descargar" class="hidden mt-4 block text-center bg-green-600 text-white p-2 rounded font-semibold hover:bg-green-700" download="horarios.png">Descargar Imagen</a>
+
+    <a id="descargar" href="#" style="display: none;" class="mt-4 block text-center bg-green-600 text-white p-2 rounded font-semibold hover:bg-green-700" download="horarios.png">📥 Descargar Imagen</a>
   </div>
 
   <script>
     function generarHorariosPadel(inicio, fin) {
       const horarios = [];
-      let [h, m] = inicio.split(":").map(Number);
-      const [endH, endM] = fin.split(":").map(Number);
+      let [h, m] = inicio.split(":" ).map(Number);
+      const [endH, endM] = fin.split(":" ).map(Number);
       const totalEndMinutes = endH * 60 + endM;
 
       while ((h * 60 + m) <= totalEndMinutes) {
@@ -75,8 +70,6 @@
     const horariosPorCancha = {
       'FÚTBOL 5': ["13:00 Hs", "14:00 Hs", "15:00 Hs", "16:00 Hs", "17:00 Hs", "18:00 Hs", "19:00 Hs", "20:00 Hs", "21:00 Hs", "22:00 Hs"],
       'FÚTBOL 6': ["13:00 Hs", "14:00 Hs", "15:00 Hs", "16:00 Hs", "17:00 Hs", "18:00 Hs", "19:00 Hs", "20:00 Hs", "21:00 Hs", "22:00 Hs"],
-      'FÚTBOL 7': ["13:00 Hs", "14:00 Hs", "15:00 Hs", "16:00 Hs", "17:00 Hs", "18:00 Hs", "19:00 Hs", "20:00 Hs", "21:00 Hs", "22:00 Hs"],
-      'FÚTBOL 8': ["13:00 Hs", "14:00 Hs", "15:00 Hs", "16:00 Hs", "17:00 Hs", "18:00 Hs", "19:00 Hs", "20:00 Hs", "21:00 Hs", "22:00 Hs"],
       'PÁDEL': generarHorariosPadel("13:00", "22:00")
     };
 
@@ -125,7 +118,6 @@
     }
 
     function generarImagen() {
-      console.log("Iniciando generación de imagen...");
       const seleccionados = Array.from(document.querySelectorAll("#horarios button.bg-green-400")).map(b => b.textContent);
 
       const categoriasSeleccionadas = [...new Set(seleccionados.map(txt => txt.split(' - ')[0]))];
@@ -241,22 +233,15 @@
         scale: 1,
         useCORS: true
       }).then(canvas => {
-        console.log("Canvas generado");
         canvas.toBlob(blob => {
-          console.log("Blob creado");
           const url = URL.createObjectURL(blob);
           const imgPreview = `<img src="${url}" alt="Imagen generada" class="rounded shadow" style="width: 270px; height: 480px;" />`;
           document.getElementById('imagenContainer').innerHTML = imgPreview;
 
           const link = document.getElementById('descargar');
           link.href = url;
-          link.download = 'horarios.png';
-          link.classList.remove('hidden');
-          link.style.display = 'block';
-          console.log("Botón de descarga visible");
+          link.style.display = 'block'; // ✅ Mostrar botón
         }, 'image/png');
-      }).catch(err => {
-        console.error("Error html2canvas:", err);
       });
     }
   </script>
