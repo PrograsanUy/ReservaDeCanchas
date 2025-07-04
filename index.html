@@ -49,7 +49,7 @@
     <div id="preview" class="mt-6 flex justify-center items-center">
       <div id="imagenContainer" style="width: 270px; height: 480px;"></div>
     </div>
-    <a id="descargar" class="hidden mt-4 block text-center bg-green-600 text-white p-2 rounded font-semibold hover:bg-green-700" download="horarios.png">Descargar Imagen</a>
+    <a id="descargar" class="mt-4 block text-center bg-green-600 text-white p-2 rounded font-semibold hover:bg-green-700" style="display:none;" download="horarios.png">Descargar Imagen</a>
   </div>
 
   <script>
@@ -73,11 +73,11 @@
     }
 
     const horariosPorCancha = {
-      'FÚTBOL 5': ["13:00 Hs", "14:00 Hs", "15:00 Hs", "16:00 Hs", "17:00 Hs", "18:00 Hs", "19:00 Hs", "20:00 Hs", "21:00 Hs", "22:00 Hs"],
-      'FÚTBOL 6': ["13:00 Hs", "14:00 Hs", "15:00 Hs", "16:00 Hs", "17:00 Hs", "18:00 Hs", "19:00 Hs", "20:00 Hs", "21:00 Hs", "22:00 Hs"],
-      'FÚTBOL 7': ["13:00 Hs", "14:00 Hs", "15:00 Hs", "16:00 Hs", "17:00 Hs", "18:00 Hs", "19:00 Hs", "20:00 Hs", "21:00 Hs", "22:00 Hs"],
-      'FÚTBOL 8': ["13:00 Hs", "14:00 Hs", "15:00 Hs", "16:00 Hs", "17:00 Hs", "18:00 Hs", "19:00 Hs", "20:00 Hs", "21:00 Hs", "22:00 Hs"],
-      'PÁDEL': generarHorariosPadel("13:00", "22:00")
+      'F5': ["13:00 Hs", "14:00 Hs", "15:00 Hs", "16:00 Hs", "17:00 Hs", "18:00 Hs", "19:00 Hs", "20:00 Hs", "21:00 Hs", "22:00 Hs"],
+      'F6': ["13:00 Hs", "14:00 Hs", "15:00 Hs", "16:00 Hs", "17:00 Hs", "18:00 Hs", "19:00 Hs", "20:00 Hs", "21:00 Hs", "22:00 Hs"],
+      'F7': ["13:00 Hs", "14:00 Hs", "15:00 Hs", "16:00 Hs", "17:00 Hs", "18:00 Hs", "19:00 Hs", "20:00 Hs", "21:00 Hs", "22:00 Hs"],
+      'F8': ["13:00 Hs", "14:00 Hs", "15:00 Hs", "16:00 Hs", "17:00 Hs", "18:00 Hs", "19:00 Hs", "20:00 Hs", "21:00 Hs", "22:00 Hs"],
+      'PADEL': generarHorariosPadel("13:00", "22:00")
     };
 
     const horariosDiv = document.getElementById("horarios");
@@ -207,12 +207,12 @@
 
         const title = document.createElement('div');
         title.textContent = cat;
-        title.style.fontSize = '32px';
+        title.style.fontSize = '48px';
         title.style.color = '#083560';
         title.style.fontWeight = 'bold';
         title.style.backgroundColor = 'white';
         title.style.marginBottom = '20px';
-        title.style.padding = '6px 0';
+        title.style.padding = '12px 0';
         title.style.borderRadius = '8px';
         div.appendChild(title);
 
@@ -250,7 +250,7 @@
           const link = document.getElementById('descargar');
           link.href = url;
           link.download = 'horarios.png';
-          link.classList.remove('hidden');
+          link.style.display = 'block';
         }, 'image/png');
       });
     }
