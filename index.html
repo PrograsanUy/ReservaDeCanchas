@@ -7,10 +7,10 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
-    @font-face {
+/*     @font-face {
       font-family: 'HandelsonSix';
       src: url('HandelsonSix.otf') format('opentype');
-    }
+    } */
     body { font-family: sans-serif; }
     .bg-overlay {
       background-color: rgba(0, 0, 0, 0.6);
@@ -180,9 +180,9 @@ const horariosPorCancha = {
       titulo.style.width = '100%';
       titulo.style.textAlign = 'center';
       titulo.innerHTML = `
-        <div style="font-family: 'HandelsonSix', arial; font-size: 115px; font-weight:bold;">TURNOS</div>
-        <div style="font-family: 'Evolventa', sans-serif; font-size: 40px; margin-top: -20px;">DISPONIBLES HOY</div>
-        <div style="font-family: 'Evolventa', sans-serif; font-size: 36px; margin-top: 10px;">${fechaFormateada}</div>
+        <div style="font-family: arial; font-size: 115px; font-weight:bold;">TURNOS</div>
+        <div style="font-family: sans-serif; font-size: 40px; margin-top: -20px;">DISPONIBLES HOY</div>
+        <div style="font-family: sans-serif; font-size: 36px; margin-top: 10px;">${fechaFormateada}</div>
       `;
       container.appendChild(titulo);
 
