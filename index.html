@@ -7,11 +7,6 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
-    /* Fuente desactivada temporalmente para evitar error si no existe el archivo */
-    /* @font-face {
-      font-family: 'HandelsonSix';
-      src: url('HandelsonSix.otf') format('opentype');
-    } */
     body { font-family: sans-serif; }
     .bg-overlay {
       background-color: rgba(0, 0, 0, 0.6);
@@ -32,7 +27,8 @@
     }
   </style>
 </head>
-<body class="bg-gray-100 min-h-screen flex flex-col items-center p-4">
+<body class="bg-gray-100 min-h-screen flex flex-col items-center p-4 relative">
+
   <div class="w-full max-w-md">
     <h1 class="text-2xl font-bold text-center mb-4">Generador de Horarios - Canchas</h1>
 
@@ -49,10 +45,18 @@
     <div id="preview" class="mt-6 flex justify-center items-center">
       <div id="imagenContainer" style="width: 270px; height: 480px;"></div>
     </div>
-
-    <!-- CORREGIDO: Botón de descarga con clase hidden y sin display:none -->
-    <a id="descargar" class="hidden mt-4 text-center bg-green-600 text-white p-2 rounded font-semibold hover:bg-green-700" download="horarios.png">Descargar Imagen</a>
   </div>
+
+  <!-- Botón SIEMPRE visible -->
+  <a id="descargar"
+     href="#"
+     download="horarios.png"
+     style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background-color: #16a34a; color: white; padding: 20px 40px;
+            font-size: 24px; font-weight: bold; border-radius: 12px;
+            z-index: 9999; text-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.3);">
+     Descargar Imagen
+  </a>
 
   <script>
     function generarHorariosPadel(inicio, fin) {
@@ -252,7 +256,6 @@
           const link = document.getElementById('descargar');
           link.href = url;
           link.download = 'horarios.png';
-          link.classList.remove('hidden'); // ✅ Hacemos visible el botón correctamente
         }, 'image/png');
       });
     }
