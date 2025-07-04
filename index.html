@@ -241,32 +241,34 @@
 
       container.appendChild(bloques);
 
-      // Esperar que las imágenes se carguen
+      const imagenContainer = document.getElementById('imagenContainer');
+      imagenContainer.innerHTML = '';
+      imagenContainer.appendChild(container);
+
       Promise.all([
         new Promise(resolve => fondo.onload = resolve),
         new Promise(resolve => logo.onload = resolve)
       ]).then(() => {
-        document.getElementById('imagenContainer').innerHTML = '';
-        document.getElementById('imagenContainer').appendChild(container.cloneNode(true));
+        requestAnimationFrame(() => {
+          setTimeout(() => {
+            html2canvas(container, {
+              width: 1080,
+              height: 1920,
+              scale: 1,
+              useCORS: true
+            }).then(canvas => {
+              canvas.toBlob(blob => {
+                const url = URL.createObjectURL(blob);
+                const link = document.getElementById('descargar');
+                link.href = url;
+                link.download = 'horarios.png';
+                link.click();
 
-        html2canvas(container, {
-          width: 1080,
-          height: 1920,
-          scale: 1,
-          useCORS: true,
-          allowTaint: false,
-          taintTest: false
-        }).then(canvas => {
-          canvas.toBlob(blob => {
-            const url = URL.createObjectURL(blob);
-            const link = document.getElementById('descargar');
-            link.href = url;
-            link.download = 'horarios.png';
-            link.click();
-
-            const imgPreview = `<img src="${url}" alt="Imagen generada" class="rounded shadow" style="width: 270px; height: 480px;" />`;
-            document.getElementById('imagenContainer').innerHTML = imgPreview;
-          });
+                const imgPreview = `<img src="${url}" alt="Imagen generada" class="rounded shadow" style="width: 270px; height: 480px;" />`;
+                imagenContainer.innerHTML = imgPreview;
+              });
+            });
+          }, 100);
         });
       });
     }
