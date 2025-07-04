@@ -47,7 +47,6 @@
     </div>
   </div>
 
-  <!-- Botón SIEMPRE visible -->
   <a id="descargar"
      href="#"
      download="horarios.png"
@@ -139,9 +138,10 @@
         return;
       }
 
-      const hoy = new Date();
-      const mes = (hoy.getMonth() + 1).toString().padStart(2, '0');
-      const dia = hoy.getDate().toString().padStart(2, '0');
+      const fechaInput = document.getElementById('fecha').value;
+      const fecha = fechaInput ? new Date(fechaInput) : new Date();
+      const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
+      const dia = fecha.getDate().toString().padStart(2, '0');
       const fechaFormateada = `${mes}.${dia}`;
 
       const container = document.createElement('div');
@@ -152,6 +152,7 @@
 
       const fondo = document.createElement('img');
       fondo.src = getRandomBackground();
+      fondo.crossOrigin = "anonymous";
       fondo.style.width = '100%';
       fondo.style.height = '100%';
       fondo.style.objectFit = 'cover';
@@ -166,6 +167,7 @@
 
       const logo = document.createElement('img');
       logo.src = 'donBalonLogo.png';
+      logo.crossOrigin = "anonymous";
       logo.style.position = 'absolute';
       logo.style.top = '108px';
       logo.style.right = '108px';
@@ -246,16 +248,19 @@
         width: 1080,
         height: 1920,
         scale: 1,
-        useCORS: true
+        useCORS: true,
+        allowTaint: false,
+        taintTest: false
       }).then(canvas => {
         canvas.toBlob(blob => {
           const url = URL.createObjectURL(blob);
-          const imgPreview = `<img src="${url}" alt="Imagen generada" class="rounded shadow" style="width: 270px; height: 480px;" />`;
-          document.getElementById('imagenContainer').innerHTML = imgPreview;
-
           const link = document.getElementById('descargar');
           link.href = url;
           link.download = 'horarios.png';
+          link.click();
+
+          const imgPreview = `<img src="${url}" alt="Imagen generada" class="rounded shadow" style="width: 270px; height: 480px;" />`;
+          document.getElementById('imagenContainer').innerHTML = imgPreview;
         }, 'image/png');
       });
     }
