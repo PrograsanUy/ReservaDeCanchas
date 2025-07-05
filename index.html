@@ -130,155 +130,143 @@
     }
 
     function generarImagen() {
-      const seleccionados = Array.from(document.querySelectorAll("#horarios button.bg-green-400")).map(b => b.textContent);
-      const categoriasSeleccionadas = [...new Set(seleccionados.map(txt => txt.split(' - ')[0]))];
+  const seleccionados = Array.from(document.querySelectorAll("#horarios button.bg-green-400")).map(b => b.textContent);
+  const categoriasSeleccionadas = [...new Set(seleccionados.map(txt => txt.split(' - ')[0]))];
 
-      if (categoriasSeleccionadas.length > 2) {
-        alert("Solo se pueden incluir 2 categorías por imagen");
-        return;
-      }
+  if (categoriasSeleccionadas.length > 2) {
+    alert("Solo se pueden incluir 2 categorías por imagen");
+    return;
+  }
 
-      const fechaInput = document.getElementById('fecha').value;
-      const fecha = fechaInput ? new Date(fechaInput) : new Date();
-      const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
-      const dia = fecha.getDate().toString().padStart(2, '0');
-      const fechaFormateada = `${mes}.${dia}`;
+  const fechaInput = document.getElementById('fecha').value;
+  const fecha = fechaInput ? new Date(fechaInput) : new Date();
+  const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
+  const dia = fecha.getDate().toString().padStart(2, '0');
+  const fechaFormateada = `${mes}.${dia}`;
 
-      const container = document.createElement('div');
-      container.style.width = '1080px';
-      container.style.height = '1920px';
-      container.style.position = 'relative';
-      container.style.overflow = 'hidden';
+  const container = document.createElement('div');
+  container.style.width = '1080px';
+  container.style.height = '1920px';
+  container.style.position = 'relative';
+  container.style.overflow = 'hidden';
+  container.style.fontFamily = 'sans-serif';
 
-      const fondo = document.createElement('img');
-      fondo.src = getRandomBackground();
-      fondo.crossOrigin = "anonymous";
-      fondo.style.width = '100%';
-      fondo.style.height = '100%';
-      fondo.style.objectFit = 'cover';
-      fondo.style.position = 'absolute';
-      fondo.style.top = '0';
-      fondo.style.left = '0';
-      container.appendChild(fondo);
+  const fondo = document.createElement('img');
+  fondo.src = getRandomBackground();
+  fondo.crossOrigin = "anonymous";
+  fondo.style.width = '100%';
+  fondo.style.height = '100%';
+  fondo.style.objectFit = 'cover';
+  fondo.style.position = 'absolute';
+  fondo.style.top = '0';
+  fondo.style.left = '0';
+  container.appendChild(fondo);
 
-      const overlay = document.createElement('div');
-      overlay.className = 'bg-overlay';
-      container.appendChild(overlay);
+  const overlay = document.createElement('div');
+  overlay.className = 'bg-overlay';
+  container.appendChild(overlay);
 
-      const logo = document.createElement('img');
-      logo.src = 'donBalonLogo.png';
-      logo.crossOrigin = "anonymous";
-      logo.style.position = 'absolute';
-      logo.style.top = '108px';
-      logo.style.right = '108px';
-      logo.style.width = '100px';
-      logo.style.zIndex = '3';
-      container.appendChild(logo);
+  const logo = document.createElement('img');
+  logo.src = 'donBalonLogo.png';
+  logo.crossOrigin = "anonymous";
+  logo.style.position = 'absolute';
+  logo.style.top = '108px';
+  logo.style.right = '108px';
+  logo.style.width = '100px';
+  logo.style.zIndex = '3';
+  container.appendChild(logo);
 
-      const titulo = document.createElement('div');
-      titulo.style.position = 'absolute';
-      titulo.style.zIndex = '2';
-      titulo.style.color = 'white';
-      titulo.style.top = '300px';
-      titulo.style.left = '0';
-      titulo.style.width = '100%';
-      titulo.style.textAlign = 'center';
-      titulo.innerHTML = `
-        <div style="font-family: arial; font-size: 115px; font-weight:bold;">TURNOS</div>
-        <div style="font-family: sans-serif; font-size: 40px; margin-top: -20px;">DISPONIBLES HOY</div>
-        <div style="font-family: sans-serif; font-size: 36px; margin-top: 10px;">${fechaFormateada}</div>
+  const titulo = document.createElement('div');
+  titulo.style.position = 'absolute';
+  titulo.style.zIndex = '2';
+  titulo.style.color = 'white';
+  titulo.style.top = '300px';
+  titulo.style.left = '0';
+  titulo.style.width = '100%';
+  titulo.style.textAlign = 'center';
+  titulo.innerHTML = `
+    <div style="font-family: arial; font-size: 115px; font-weight:bold;">TURNOS</div>
+    <div style="font-size: 40px; margin-top: -20px;">DISPONIBLES HOY</div>
+    <div style="font-size: 36px; margin-top: 10px;">${fechaFormateada}</div>
+  `;
+  container.appendChild(titulo);
+
+  const horariosPorCategoria = {};
+  seleccionados.forEach(txt => {
+    const [categoria, hora] = txt.split(' - ');
+    if (!horariosPorCategoria[categoria]) horariosPorCategoria[categoria] = [];
+    horariosPorCategoria[categoria].push(hora);
+  });
+
+  const bloques = document.createElement('div');
+  bloques.style.position = 'absolute';
+  bloques.style.top = '650px';
+  bloques.style.left = '50%';
+  bloques.style.transform = 'translateX(-50%)';
+  bloques.style.display = 'flex';
+  bloques.style.gap = '50px';
+  bloques.style.zIndex = '2';
+
+  categoriasSeleccionadas.forEach(cat => {
+    const wrapper = document.createElement('div');
+    wrapper.style.width = '350px';
+    wrapper.style.textAlign = 'center';
+
+    wrapper.innerHTML += `
+      <div style="font-size:32px;color:#083560;font-weight:bold;background:white;margin-bottom:20px;padding:10px 0;border-radius:8px;">
+        ${cat}
+      </div>
+    `;
+
+    horariosPorCategoria[cat].forEach(hora => {
+      wrapper.innerHTML += `
+        <div style="
+          font-size:34px;
+          height:60px;
+          line-height:60px;
+          margin-bottom:11px;
+          background:#083560;
+          color:white;
+          border-radius:8px;">
+          ${hora}
+        </div>
       `;
-      container.appendChild(titulo);
+    });
 
-      const horariosPorCategoria = {};
-      seleccionados.forEach(txt => {
-        const [categoria, hora] = txt.split(' - ');
-        if (!horariosPorCategoria[categoria]) horariosPorCategoria[categoria] = [];
-        horariosPorCategoria[categoria].push(hora);
-      });
+    bloques.appendChild(wrapper);
+  });
 
-      const bloques = document.createElement('div');
-      bloques.style.position = 'absolute';
-      bloques.style.top = '650px';
-      bloques.style.left = '50%';
-      bloques.style.transform = 'translateX(-50%)';
-      bloques.style.display = 'flex';
-      bloques.style.gap = '50px';
-      bloques.style.zIndex = '2';
+  container.appendChild(bloques);
 
-      categoriasSeleccionadas.forEach(cat => {
-        const div = document.createElement('div');
-        div.style.padding = '0';
-        div.style.borderRadius = '12px';
-        div.style.width = '350px';
-        div.style.textAlign = 'center';
+  const imagenContainer = document.getElementById('imagenContainer');
+  imagenContainer.innerHTML = '';
+  imagenContainer.appendChild(container);
 
-        const title = document.createElement('div');
-        title.textContent = cat;
-        title.style.fontSize = '32px';
-        title.style.color = '#083560';
-        title.style.fontWeight = 'bold';
-        title.style.backgroundColor = 'white';
-        title.style.marginBottom = '20px';
-        title.style.height = '50px';
-        title.style.display = 'flex';
-        title.style.alignItems = 'center';
-        title.style.justifyContent = 'center';
-        title.style.borderRadius = '8px';
-        div.appendChild(title);
+  Promise.all([
+    new Promise(resolve => fondo.onload = resolve),
+    new Promise(resolve => logo.onload = resolve)
+  ]).then(() => {
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        html2canvas(container, {
+          width: 1080,
+          height: 1920,
+          scale: 1,
+          useCORS: true
+        }).then(canvas => {
+          canvas.toBlob(blob => {
+            const url = URL.createObjectURL(blob);
+            const link = document.getElementById('descargar');
+            link.href = url;
+            link.download = 'horarios.png';
+            link.click();
 
-        horariosPorCategoria[cat].forEach(hora => {
-          const p = document.createElement('div');
-          p.textContent = hora;
-          p.style.display = 'flex';
-          p.style.alignItems = 'center';
-          p.style.justifyContent = 'center';
-          p.style.height = '60px';
-          p.style.fontSize = '34px';
-          p.style.paddingTop = '2px';
-          p.style.backgroundColor = '#083560';
-          p.style.color = 'white';
-          p.style.borderRadius = '8px';
-          p.style.marginBottom = '11px';
-          div.appendChild(p);
+            const imgPreview = `<img src="${url}" alt="Imagen generada" class="rounded shadow" style="width: 270px; height: 480px;" />`;
+            imagenContainer.innerHTML = imgPreview;
+          });
         });
+      }, 100);
+    });
+  });
+}
 
-        bloques.appendChild(div);
-      });
-
-      container.appendChild(bloques);
-
-      const imagenContainer = document.getElementById('imagenContainer');
-      imagenContainer.innerHTML = '';
-      imagenContainer.appendChild(container);
-
-      Promise.all([
-        new Promise(resolve => fondo.onload = resolve),
-        new Promise(resolve => logo.onload = resolve)
-      ]).then(() => {
-        requestAnimationFrame(() => {
-          setTimeout(() => {
-            html2canvas(container, {
-              width: 1080,
-              height: 1920,
-              scale: 1,
-              useCORS: true
-            }).then(canvas => {
-              canvas.toBlob(blob => {
-                const url = URL.createObjectURL(blob);
-                const link = document.getElementById('descargar');
-                link.href = url;
-                link.download = 'horarios.png';
-                link.click();
-
-                const imgPreview = `<img src="${url}" alt="Imagen generada" class="rounded shadow" style="width: 270px; height: 480px;" />`;
-                imagenContainer.innerHTML = imgPreview;
-              });
-            });
-          }, 100);
-        });
-      });
-    }
-  </script>
-</body>
-</html>
