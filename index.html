@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Generador de Horarios - Canchas</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -19,173 +19,111 @@
 </head>
 <body class="bg-gray-100 min-h-screen flex flex-col items-center p-4 relative">
 
-  <div class="w-full max-w-md">
-    <h1 class="text-2xl font-bold text-center mb-4">Generador de Horarios - Canchas</h1>
+<div class="w-full max-w-md">
+  <h1 class="text-2xl font-bold text-center mb-4">Generador de Horarios - Canchas</h1>
 
-    <label class="block mb-2 font-medium">Fecha</label>
-    <input id="fecha" type="date" class="w-full border rounded p-2 mb-4" />
+  <label class="block mb-2 font-medium">Fecha</label>
+  <input id="fecha" type="date" class="w-full border rounded p-2 mb-4">
 
-    <div class="mb-4">
-      <label class="block mb-2 font-medium">Horarios disponibles</label>
-      <div id="horarios" class="space-y-2"></div>
-    </div>
-
-    <button onclick="generarImagen()" class="w-full bg-blue-600 text-white p-2 rounded font-semibold hover:bg-blue-700">Generar Imagen</button>
-
-    <div id="preview" class="mt-6 flex justify-center items-center">
-      <div id="imagenContainer" style="width: 270px; height: 480px;"></div>
-    </div>
-
-    <a id="descargar" href="#" download="horarios.png"
-       style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-              background-color: #16a34a; color: white; padding: 20px 40px;
-              font-size: 24px; font-weight: bold; border-radius: 12px;
-              z-index: 9999; text-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.3);">
-       Descargar Imagen
-    </a>
+  <div class="mb-4">
+    <label class="block mb-2 font-medium">Horarios disponibles</label>
+    <div id="horarios" class="space-y-2"></div>
   </div>
 
-  <script>
-    function generarHorariosPadel(inicio, fin) {
-      const horarios = [];
-      let [h, m] = inicio.split(":" ).map(Number);
-      const [endH, endM] = fin.split(":" ).map(Number);
-      const totalEndMinutes = endH * 60 + endM;
+  <button onclick="generarImagen()" class="w-full bg-blue-600 text-white p-2 rounded font-semibold hover:bg-blue-700">Generar Imagen</button>
 
-      while ((h * 60 + m) <= totalEndMinutes) {
-        const horaStr = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')} Hs`;
-        horarios.push(horaStr);
-        m += 30;
-        if (m >= 60) { h += 1; m -= 60; }
-        h += 1;
-      }
-      return horarios;
-    }
+  <div id="preview" class="mt-6 flex justify-center items-center">
+    <div id="imagenContainer" style="width: 270px; height: 480px;"></div>
+  </div>
 
-    const horariosPorCancha = {
-      'FÚTBOL 5': ["13:00 Hs", "14:00 Hs", "15:00 Hs", "16:00 Hs", "17:00 Hs", "18:00 Hs", "19:00 Hs", "20:00 Hs", "21:00 Hs", "22:00 Hs"],
-      'FÚTBOL 6': ["13:00 Hs", "14:00 Hs", "15:00 Hs", "16:00 Hs", "17:00 Hs", "18:00 Hs", "19:00 Hs", "20:00 Hs", "21:00 Hs", "22:00 Hs"],
-      'FÚTBOL 7': ["13:00 Hs", "14:00 Hs", "15:00 Hs", "16:00 Hs", "17:00 Hs", "18:00 Hs", "19:00 Hs", "20:00 Hs", "21:00 Hs", "22:00 Hs"],
-      'FÚTBOL 8': ["13:00 Hs", "14:00 Hs", "15:00 Hs", "16:00 Hs", "17:00 Hs", "18:00 Hs", "19:00 Hs", "20:00 Hs", "21:00 Hs", "22:00 Hs"],
-      'PÁDEL': generarHorariosPadel("13:00", "22:00")
-    };
+  <a id="descargar" href="#" download="horarios.png" style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background-color: #16a34a; color: white; padding: 20px 40px; font-size: 24px; font-weight: bold; border-radius: 12px; z-index: 9999; text-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.3);">Descargar Imagen</a>
+</div>
 
-    const horariosDiv = document.getElementById("horarios");
-    Object.entries(horariosPorCancha).forEach(([cancha, horarios]) => {
-      const sectionWrapper = document.createElement("div");
-      sectionWrapper.className = "bg-white p-4 rounded shadow";
+<script>
+const horariosPorCancha = {
+  'FÚTBOL 5': ["13:00 Hs", "14:00 Hs", "15:00 Hs", "16:00 Hs", "17:00 Hs", "18:00 Hs", "19:00 Hs", "20:00 Hs", "21:00 Hs", "22:00 Hs"],
+  'FÚTBOL 6': ["13:00 Hs", "14:00 Hs", "15:00 Hs", "16:00 Hs", "17:00 Hs", "18:00 Hs", "19:00 Hs", "20:00 Hs", "21:00 Hs", "22:00 Hs"],
+  'FÚTBOL 7': ["13:00 Hs", "14:00 Hs", "15:00 Hs", "16:00 Hs", "17:00 Hs", "18:00 Hs", "19:00 Hs", "20:00 Hs", "21:00 Hs", "22:00 Hs"],
+  'FÚTBOL 8': ["13:00 Hs", "14:00 Hs", "15:00 Hs", "16:00 Hs", "17:00 Hs", "18:00 Hs", "19:00 Hs", "20:00 Hs", "21:00 Hs", "22:00 Hs"],
+  'PÁDEL': ["13:00 Hs", "14:30 Hs", "16:00 Hs", "17:30 Hs", "19:00 Hs", "20:30 Hs", "22:00 Hs"]
+};
 
-      const titleWrapper = document.createElement("div");
-      titleWrapper.className = "flex items-center justify-between mb-3";
+const horariosDiv = document.getElementById("horarios");
+Object.entries(horariosPorCancha).forEach(([cancha, horarios]) => {
+  const sectionWrapper = document.createElement("div");
+  sectionWrapper.className = "bg-white p-4 rounded shadow";
 
-      const title = document.createElement("h3");
-      title.textContent = cancha;
-      title.className = "font-bold text-[#083560] text-xl";
+  const title = document.createElement("h3");
+  title.textContent = cancha;
+  title.className = "font-bold text-[#083560] text-xl mb-3";
+  sectionWrapper.appendChild(title);
 
-      const selectAll = document.createElement("button");
-      selectAll.textContent = "Seleccionar todos";
-      selectAll.className = "text-sm text-blue-600 hover:underline";
-      selectAll.onclick = () => {
-        const buttons = sectionWrapper.querySelectorAll("button[data-categoria='" + cancha + "']");
-        buttons.forEach(btn => btn.classList.add("bg-green-400"));
-      };
+  const section = document.createElement("div");
+  section.className = "grid grid-cols-4 gap-2";
+  horarios.forEach(h => {
+    const btn = document.createElement("button");
+    btn.className = "text-sm bg-gray-200 text-black px-2 py-1 rounded hover:bg-blue-300";
+    btn.textContent = `${cancha} - ${h}`;
+    btn.onclick = () => btn.classList.toggle("bg-green-400");
+    section.appendChild(btn);
+  });
 
-      titleWrapper.appendChild(title);
-      titleWrapper.appendChild(selectAll);
-      sectionWrapper.appendChild(titleWrapper);
+  sectionWrapper.appendChild(section);
+  horariosDiv.appendChild(sectionWrapper);
+});
 
-      const section = document.createElement("div");
-      section.className = "grid grid-cols-4 gap-2";
-      horarios.forEach(h => {
-        const btn = document.createElement("button");
-        btn.className = "text-sm bg-gray-200 text-black px-2 py-1 rounded hover:bg-blue-300";
-        btn.textContent = `${cancha} - ${h}`;
-        btn.setAttribute("data-categoria", cancha);
-        btn.onclick = () => btn.classList.toggle("bg-green-400");
-        section.appendChild(btn);
-      });
+function generarImagen() {
+  const seleccionados = Array.from(document.querySelectorAll("#horarios button.bg-green-400")).map(b => b.textContent);
+  const categoriasSeleccionadas = [...new Set(seleccionados.map(txt => txt.split(' - ')[0]))];
 
-      sectionWrapper.appendChild(section);
-      horariosDiv.appendChild(sectionWrapper);
+  const fechaInput = document.getElementById('fecha').value;
+  const fecha = fechaInput ? new Date(fechaInput) : new Date();
+  const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
+  const dia = fecha.getDate().toString().padStart(2, '0');
+  const fechaFormateada = `${mes}.${dia}`;
+
+  let contentHTML = `<div style="position:relative;width:1080px;height:1920px;overflow:hidden;">
+    <img src="${getRandomBackground()}" style="position:absolute;width:100%;height:100%;object-fit:cover;">
+    <div style="background-color:rgba(0,0,0,0.6);position:absolute;width:100%;height:100%;top:0;left:0;"></div>
+    <img src="donBalonLogo.png" style="position:absolute;top:108px;right:108px;width:100px;">
+    <div style="position:absolute;top:300px;width:100%;text-align:center;color:white;">
+      <div style="font-size:115px;font-weight:bold;">TURNOS</div>
+      <div style="font-size:40px;margin-top:-20px;">DISPONIBLES HOY</div>
+      <div style="font-size:36px;margin-top:10px;">${fechaFormateada}</div>
+    </div>
+    <div style="position:absolute;top:650px;left:50%;transform:translateX(-50%);display:flex;gap:50px;">`;
+
+  categoriasSeleccionadas.forEach(cat => {
+    contentHTML += `<div style="width:350px;display:flex;flex-direction:column;align-items:center;">
+      <div style="font-size:32px;background:white;color:#083560;font-weight:bold;height:60px;width:100%;display:flex;justify-content:center;align-items:center;border-radius:12px;margin-bottom:20px;">${cat}</div>`;
+
+    seleccionados.filter(txt => txt.startsWith(cat)).forEach(txt => {
+      const hora = txt.split(' - ')[1];
+      contentHTML += `<div style="height:65px;width:100%;background:#083560;color:white;font-size:30px;font-weight:600;display:flex;justify-content:center;align-items:center;border-radius:10px;margin-bottom:15px;">${hora}</div>`;
     });
 
-    function getRandomBackground() {
-      const fondos = ["fondos/f1.jpg", "fondos/f2.jpg", "fondos/f3.jpg", "fondos/f4.jpg", "fondos/f5.jpg"];
-      return fondos[Math.floor(Math.random() * fondos.length)];
-    }
+    contentHTML += `</div>`;
+  });
 
-    function generarImagen() {
-      const seleccionados = Array.from(document.querySelectorAll("#horarios button.bg-green-400")).map(b => b.textContent);
-      const categoriasSeleccionadas = [...new Set(seleccionados.map(txt => txt.split(' - ')[0]))];
+  contentHTML += `</div></div>`;
 
-      if (categoriasSeleccionadas.length > 2) return alert("Solo se pueden incluir 2 categorías por imagen");
+  const imagenContainer = document.getElementById('imagenContainer');
+  imagenContainer.innerHTML = contentHTML;
 
-      const fechaInput = document.getElementById('fecha').value;
-      const fecha = fechaInput ? new Date(fechaInput) : new Date();
-      const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
-      const dia = fecha.getDate().toString().padStart(2, '0');
-      const fechaFormateada = `${mes}.${dia}`;
+  html2canvas(imagenContainer.firstChild, {useCORS:true}).then(canvas => {
+    canvas.toBlob(blob => {
+      const url = URL.createObjectURL(blob);
+      document.getElementById('descargar').href = url;
+      document.getElementById('imagenContainer').innerHTML = `<img src="${url}" alt="Imagen generada" class="rounded shadow" style="width: 270px; height: 480px;">`;
+      document.getElementById('descargar').click();
+    });
+  });
+}
 
-      const container = document.createElement('div');
-      Object.assign(container.style, { width: '1080px', height: '1920px', position: 'relative', overflow: 'hidden' });
-
-      const fondo = Object.assign(document.createElement('img'), {
-        src: getRandomBackground(), crossOrigin: "anonymous", style: "width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;"
-      });
-      container.appendChild(fondo);
-
-      const overlay = document.createElement('div'); overlay.className = 'bg-overlay'; container.appendChild(overlay);
-
-      const logo = Object.assign(document.createElement('img'), {
-        src: 'donBalonLogo.png', crossOrigin: "anonymous", style: "position:absolute;top:108px;right:108px;width:100px;z-index:3"
-      }); container.appendChild(logo);
-
-      const titulo = document.createElement('div');
-      titulo.innerHTML = `<div style="font-size:115px;font-weight:bold">TURNOS</div>
-                          <div style="font-size:40px;margin-top:-20px;">DISPONIBLES HOY</div>
-                          <div style="font-size:36px;margin-top:10px;">${fechaFormateada}</div>`;
-      Object.assign(titulo.style, { position: 'absolute', top: '300px', left: '0', width: '100%', textAlign: 'center', color: 'white', zIndex: 2 });
-      container.appendChild(titulo);
-
-      const bloques = document.createElement('div');
-      Object.assign(bloques.style, { position: 'absolute', top: '650px', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '50px', zIndex: 2 });
-
-      categoriasSeleccionadas.forEach(cat => {
-        const div = document.createElement('div');
-        Object.assign(div.style, { width: '350px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px' });
-
-        const title = document.createElement('div');
-        Object.assign(title.style, { fontSize: '32px', backgroundColor: 'white', color: '#083560', fontWeight: 'bold', height: '60px', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', borderRadius: '12px' });
-        title.textContent = cat;
-        div.appendChild(title);
-
-        seleccionados.filter(t => t.startsWith(cat)).forEach(txt => {
-          const horarioBox = document.createElement('div');
-          Object.assign(horarioBox.style, { height: '65px', width: '100%', backgroundColor: '#083560', color: 'white', fontSize: '30px', fontWeight: '600', display: 'flex', justifyContent: 'center', alignItems: 'center', borderRadius: '10px' });
-          horarioBox.textContent = txt.split(' - ')[1];
-          div.appendChild(horarioBox);
-        });
-
-        bloques.appendChild(div);
-      });
-
-      container.appendChild(bloques);
-
-      document.getElementById('imagenContainer').innerHTML = '';
-      document.getElementById('imagenContainer').appendChild(container);
-
-      Promise.all([new Promise(res => fondo.onload = res), new Promise(res => logo.onload = res)]).then(() =>
-        html2canvas(container, { width: 1080, height: 1920, scale: 1, useCORS: true }).then(canvas => {
-          canvas.toBlob(blob => {
-            const url = URL.createObjectURL(blob);
-            document.getElementById('descargar').href = url;
-            document.getElementById('descargar').download = 'horarios.png';
-            document.getElementById('descargar').click();
-            document.getElementById('imagenContainer').innerHTML = `<img src="${url}" alt="Imagen generada" class="rounded shadow" style="width: 270px; height: 480px;" />`;
-          });
-        })
-      );
-    }
-  </script>
+function getRandomBackground() {
+  const fondos = ["fondos/f1.jpg", "fondos/f2.jpg", "fondos/f3.jpg", "fondos/f4.jpg", "fondos/f5.jpg"];
+  return fondos[Math.floor(Math.random() * fondos.length)];
+}
+</script>
 </body>
 </html>
