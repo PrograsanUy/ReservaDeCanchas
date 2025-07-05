@@ -227,20 +227,20 @@
         title.style.borderRadius = '8px';
         div.appendChild(title);
 
-        horariosPorCategoria[cat].forEach(hora => {
-          const p = document.createElement('div');
-          p.textContent = hora;
-          p.style.fontSize = '36px';
-          p.style.marginBottom = '11px';
-          p.style.height = '60px';
-          p.style.display = 'flex';
-          p.style.alignItems = 'center';
-          p.style.justifyContent = 'center';
-          p.style.backgroundColor = '#083560';
-          p.style.color = 'white';
-          p.style.borderRadius = '8px';
-          div.appendChild(p);
-        });
+horariosPorCategoria[cat].forEach(hora => {
+  const p = document.createElement('div');
+  p.textContent = hora;
+  p.style.fontSize = '36px';
+  p.style.marginBottom = '11px';
+  p.style.height = '60px';
+  p.style.lineHeight = '60px'; // centra verticalmente el texto
+  p.style.textAlign = 'center'; // centra horizontalmente
+  p.style.backgroundColor = '#083560';
+  p.style.color = 'white';
+  p.style.borderRadius = '8px';
+  div.appendChild(p);
+});
+
 
         bloques.appendChild(div);
       });
