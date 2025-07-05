@@ -23,7 +23,8 @@
     }
     button:hover { background-color: #cbd5e1; }
     button.selected { background-color: #16a34a; color: white; }
-    #imagenContainer { width: 1080px; height: 1920px; overflow: hidden; transform: scale(0.25); transform-origin: top left; margin-top: 20px; }
+    #imagenContainer { width: 1080px; height: 1920px; overflow: hidden; position: relative; }
+    #previewContainer img { width: 270px; height: 480px; margin-top: 20px; }
   </style>
 </head>
 <body>
@@ -40,6 +41,7 @@
 
 <div style="width: 100%; overflow: auto;">
   <div id="imagenContainer"></div>
+  <div id="previewContainer"></div>
 </div>
 
 <script>
@@ -130,14 +132,15 @@ function generarImagen() {
   html2canvas(imagenContainer.firstChild, {useCORS:true, width:1080, height:1920, scale:1}).then(canvas => {
     canvas.toBlob(blob => {
       const url = URL.createObjectURL(blob);
+
+      // Descargar la imagen automáticamente
       const link = document.createElement('a');
       link.href = url;
       link.download = 'horarios.png';
-      document.body.appendChild(link);
       link.click();
-      document.body.removeChild(link);
 
-      imagenContainer.innerHTML = `<img src="${url}" style="width: 270px; height: 480px;">`;
+      // Mostrar preview
+      document.getElementById('previewContainer').innerHTML = `<img src="${url}" alt="Preview">`;
     });
   });
 }
