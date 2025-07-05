@@ -1,9 +1,9 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Reserva de Canchas</title>
+  <title>Generador de Horarios - Canchas</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
@@ -14,16 +14,6 @@
       top: 0; left: 0;
       width: 100%; height: 100%;
       z-index: 1;
-    }
-    #preview canvas, #preview img {
-      max-width: 100%;
-      height: auto;
-    }
-    @media (max-width: 640px) {
-      #preview canvas, #preview img {
-        max-width: 100% !important;
-        height: auto !important;
-      }
     }
   </style>
 </head>
@@ -45,33 +35,28 @@
     <div id="preview" class="mt-6 flex justify-center items-center">
       <div id="imagenContainer" style="width: 270px; height: 480px;"></div>
     </div>
-  </div>
 
-  <a id="descargar"
-     href="#"
-     download="horarios.png"
-     style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-            background-color: #16a34a; color: white; padding: 20px 40px;
-            font-size: 24px; font-weight: bold; border-radius: 12px;
-            z-index: 9999; text-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.3);">
-     Descargar Imagen
-  </a>
+    <a id="descargar" href="#" download="horarios.png"
+       style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+              background-color: #16a34a; color: white; padding: 20px 40px;
+              font-size: 24px; font-weight: bold; border-radius: 12px;
+              z-index: 9999; text-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.3);">
+       Descargar Imagen
+    </a>
+  </div>
 
   <script>
     function generarHorariosPadel(inicio, fin) {
       const horarios = [];
-      let [h, m] = inicio.split(":").map(Number);
-      const [endH, endM] = fin.split(":").map(Number);
+      let [h, m] = inicio.split(":" ).map(Number);
+      const [endH, endM] = fin.split(":" ).map(Number);
       const totalEndMinutes = endH * 60 + endM;
 
       while ((h * 60 + m) <= totalEndMinutes) {
-        const horaStr = ${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')} Hs;
+        const horaStr = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')} Hs`;
         horarios.push(horaStr);
         m += 30;
-        if (m >= 60) {
-          h += 1;
-          m -= 60;
-        }
+        if (m >= 60) { h += 1; m -= 60; }
         h += 1;
       }
       return horarios;
@@ -114,7 +99,7 @@
       horarios.forEach(h => {
         const btn = document.createElement("button");
         btn.className = "text-sm bg-gray-200 text-black px-2 py-1 rounded hover:bg-blue-300";
-        btn.textContent = ${cancha} - ${h};
+        btn.textContent = `${cancha} - ${h}`;
         btn.setAttribute("data-categoria", cancha);
         btn.onclick = () => btn.classList.toggle("bg-green-400");
         section.appendChild(btn);
@@ -130,154 +115,77 @@
     }
 
     function generarImagen() {
-  const seleccionados = Array.from(document.querySelectorAll("#horarios button.bg-green-400")).map(b => b.textContent);
-  const categoriasSeleccionadas = [...new Set(seleccionados.map(txt => txt.split(' - ')[0]))];
+      const seleccionados = Array.from(document.querySelectorAll("#horarios button.bg-green-400")).map(b => b.textContent);
+      const categoriasSeleccionadas = [...new Set(seleccionados.map(txt => txt.split(' - ')[0]))];
 
-  if (categoriasSeleccionadas.length > 2) {
-    alert("Solo se pueden incluir 2 categorías por imagen");
-    return;
-  }
+      if (categoriasSeleccionadas.length > 2) return alert("Solo se pueden incluir 2 categorías por imagen");
 
-  const fechaInput = document.getElementById('fecha').value;
-  const fecha = fechaInput ? new Date(fechaInput) : new Date();
-  const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
-  const dia = fecha.getDate().toString().padStart(2, '0');
-  const fechaFormateada = `${mes}.${dia}`;
+      const fechaInput = document.getElementById('fecha').value;
+      const fecha = fechaInput ? new Date(fechaInput) : new Date();
+      const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
+      const dia = fecha.getDate().toString().padStart(2, '0');
+      const fechaFormateada = `${mes}.${dia}`;
 
-  const container = document.createElement('div');
-  container.style.width = '1080px';
-  container.style.height = '1920px';
-  container.style.position = 'relative';
-  container.style.overflow = 'hidden';
+      const container = document.createElement('div');
+      Object.assign(container.style, { width: '1080px', height: '1920px', position: 'relative', overflow: 'hidden' });
 
-  const fondo = document.createElement('img');
-  fondo.src = getRandomBackground();
-  fondo.crossOrigin = "anonymous";
-  fondo.style.width = '100%';
-  fondo.style.height = '100%';
-  fondo.style.objectFit = 'cover';
-  fondo.style.position = 'absolute';
-  fondo.style.top = '0';
-  fondo.style.left = '0';
-  container.appendChild(fondo);
+      const fondo = Object.assign(document.createElement('img'), {
+        src: getRandomBackground(), crossOrigin: "anonymous", style: "width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;"
+      });
+      container.appendChild(fondo);
 
-  const overlay = document.createElement('div');
-  overlay.className = 'bg-overlay';
-  container.appendChild(overlay);
+      const overlay = document.createElement('div'); overlay.className = 'bg-overlay'; container.appendChild(overlay);
 
-  const logo = document.createElement('img');
-  logo.src = 'donBalonLogo.png';
-  logo.crossOrigin = "anonymous";
-  logo.style.position = 'absolute';
-  logo.style.top = '108px';
-  logo.style.right = '108px';
-  logo.style.width = '100px';
-  logo.style.zIndex = '3';
-  container.appendChild(logo);
+      const logo = Object.assign(document.createElement('img'), {
+        src: 'donBalonLogo.png', crossOrigin: "anonymous", style: "position:absolute;top:108px;right:108px;width:100px;z-index:3"
+      }); container.appendChild(logo);
 
-  const titulo = document.createElement('div');
-  titulo.style.position = 'absolute';
-  titulo.style.zIndex = '2';
-  titulo.style.color = 'white';
-  titulo.style.top = '300px';
-  titulo.style.left = '0';
-  titulo.style.width = '100%';
-  titulo.style.textAlign = 'center';
-  titulo.innerHTML = `
-    <div style="font-family: arial; font-size: 115px; font-weight:bold;">TURNOS</div>
-    <div style="font-family: sans-serif; font-size: 40px; margin-top: -20px;">DISPONIBLES HOY</div>
-    <div style="font-family: sans-serif; font-size: 36px; margin-top: 10px;">${fechaFormateada}</div>
-  `;
-  container.appendChild(titulo);
+      const titulo = document.createElement('div');
+      titulo.innerHTML = `<div style="font-size:115px;font-weight:bold">TURNOS</div>
+                          <div style="font-size:40px;margin-top:-20px;">DISPONIBLES HOY</div>
+                          <div style="font-size:36px;margin-top:10px;">${fechaFormateada}</div>`;
+      Object.assign(titulo.style, { position: 'absolute', top: '300px', left: '0', width: '100%', textAlign: 'center', color: 'white', zIndex: 2 });
+      container.appendChild(titulo);
 
-  const horariosPorCategoria = {};
-  seleccionados.forEach(txt => {
-    const [categoria, hora] = txt.split(' - ');
-    if (!horariosPorCategoria[categoria]) horariosPorCategoria[categoria] = [];
-    horariosPorCategoria[categoria].push(hora);
-  });
+      const bloques = document.createElement('div');
+      Object.assign(bloques.style, { position: 'absolute', top: '650px', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '50px', zIndex: 2 });
 
-  const bloques = document.createElement('div');
-  bloques.style.position = 'absolute';
-  bloques.style.top = '650px';
-  bloques.style.left = '50%';
-  bloques.style.transform = 'translateX(-50%)';
-  bloques.style.display = 'flex';
-  bloques.style.gap = '50px';
-  bloques.style.zIndex = '2';
+      categoriasSeleccionadas.forEach(cat => {
+        const div = document.createElement('div');
+        Object.assign(div.style, { width: '350px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px' });
 
-  categoriasSeleccionadas.forEach(cat => {
-    const div = document.createElement('div');
-    div.style.width = '350px';
-    div.style.display = 'flex';
-    div.style.flexDirection = 'column';
-    div.style.alignItems = 'center';
-    div.style.justifyContent = 'flex-start';
-    div.style.gap = '20px';
+        const title = document.createElement('div');
+        Object.assign(title.style, { fontSize: '32px', backgroundColor: 'white', color: '#083560', fontWeight: 'bold', height: '60px', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', borderRadius: '12px' });
+        title.textContent = cat;
+        div.appendChild(title);
 
-    const title = document.createElement('div');
-    title.textContent = cat;
-    title.style.fontSize = '32px';
-    title.style.color = '#083560';
-    title.style.fontWeight = 'bold';
-    title.style.backgroundColor = 'white';
-    title.style.width = '100%';
-    title.style.height = '60px';
-    title.style.display = 'flex';
-    title.style.alignItems = 'center';
-    title.style.justifyContent = 'center';
-    title.style.borderRadius = '12px';
-    div.appendChild(title);
+        seleccionados.filter(t => t.startsWith(cat)).forEach(txt => {
+          const horarioBox = document.createElement('div');
+          Object.assign(horarioBox.style, { height: '65px', width: '100%', backgroundColor: '#083560', color: 'white', fontSize: '30px', fontWeight: '600', display: 'flex', justifyContent: 'center', alignItems: 'center', borderRadius: '10px' });
+          horarioBox.textContent = txt.split(' - ')[1];
+          div.appendChild(horarioBox);
+        });
 
-    horariosPorCategoria[cat].forEach(hora => {
-      const horarioBox = document.createElement('div');
-      horarioBox.textContent = hora;
-      horarioBox.style.width = '100%';
-      horarioBox.style.height = '65px';
-      horarioBox.style.backgroundColor = '#083560';
-      horarioBox.style.display = 'flex';
-      horarioBox.style.alignItems = 'center';
-      horarioBox.style.justifyContent = 'center';
-      horarioBox.style.fontSize = '30px';
-      horarioBox.style.color = 'white';
-      horarioBox.style.fontWeight = '600';
-      horarioBox.style.borderRadius = '10px';
-      div.appendChild(horarioBox);
-    });
+        bloques.appendChild(div);
+      });
 
-    bloques.appendChild(div);
-  });
+      container.appendChild(bloques);
 
-  container.appendChild(bloques);
+      document.getElementById('imagenContainer').innerHTML = '';
+      document.getElementById('imagenContainer').appendChild(container);
 
-  const imagenContainer = document.getElementById('imagenContainer');
-  imagenContainer.innerHTML = '';
-  imagenContainer.appendChild(container);
-
-  Promise.all([
-    new Promise(resolve => fondo.onload = resolve),
-    new Promise(resolve => logo.onload = resolve)
-  ]).then(() => {
-    requestAnimationFrame(() => {
-      setTimeout(() => {
-        html2canvas(container, {
-          width: 1080,
-          height: 1920,
-          scale: 1,
-          useCORS: true
-        }).then(canvas => {
+      Promise.all([new Promise(res => fondo.onload = res), new Promise(res => logo.onload = res)]).then(() =>
+        html2canvas(container, { width: 1080, height: 1920, scale: 1, useCORS: true }).then(canvas => {
           canvas.toBlob(blob => {
             const url = URL.createObjectURL(blob);
-            const link = document.getElementById('descargar');
-            link.href = url;
-            link.download = 'horarios.png';
-            link.click();
-
-            const imgPreview = `<img src="${url}" alt="Imagen generada" class="rounded shadow" style="width: 270px; height: 480px;" />`;
-            imagenContainer.innerHTML = imgPreview;
+            document.getElementById('descargar').href = url;
+            document.getElementById('descargar').download = 'horarios.png';
+            document.getElementById('descargar').click();
+            document.getElementById('imagenContainer').innerHTML = `<img src="${url}" alt="Imagen generada" class="rounded shadow" style="width: 270px; height: 480px;" />`;
           });
-        });
-      }, 100);
-    });
-  });
-}
+        })
+      );
+    }
+  </script>
+</body>
+</html>
