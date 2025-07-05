@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
@@ -65,7 +65,7 @@
       const totalEndMinutes = endH * 60 + endM;
 
       while ((h * 60 + m) <= totalEndMinutes) {
-        const horaStr = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')} Hs`;
+        const horaStr = ${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')} Hs;
         horarios.push(horaStr);
         m += 30;
         if (m >= 60) {
@@ -114,7 +114,7 @@
       horarios.forEach(h => {
         const btn = document.createElement("button");
         btn.className = "text-sm bg-gray-200 text-black px-2 py-1 rounded hover:bg-blue-300";
-        btn.textContent = `${cancha} - ${h}`;
+        btn.textContent = ${cancha} - ${h};
         btn.setAttribute("data-categoria", cancha);
         btn.onclick = () => btn.classList.toggle("bg-green-400");
         section.appendChild(btn);
@@ -149,7 +149,6 @@
   container.style.height = '1920px';
   container.style.position = 'relative';
   container.style.overflow = 'hidden';
-  container.style.fontFamily = 'sans-serif';
 
   const fondo = document.createElement('img');
   fondo.src = getRandomBackground();
@@ -186,8 +185,8 @@
   titulo.style.textAlign = 'center';
   titulo.innerHTML = `
     <div style="font-family: arial; font-size: 115px; font-weight:bold;">TURNOS</div>
-    <div style="font-size: 40px; margin-top: -20px;">DISPONIBLES HOY</div>
-    <div style="font-size: 36px; margin-top: 10px;">${fechaFormateada}</div>
+    <div style="font-family: sans-serif; font-size: 40px; margin-top: -20px;">DISPONIBLES HOY</div>
+    <div style="font-family: sans-serif; font-size: 36px; margin-top: 10px;">${fechaFormateada}</div>
   `;
   container.appendChild(titulo);
 
@@ -208,32 +207,45 @@
   bloques.style.zIndex = '2';
 
   categoriasSeleccionadas.forEach(cat => {
-    const wrapper = document.createElement('div');
-    wrapper.style.width = '350px';
-    wrapper.style.textAlign = 'center';
+    const div = document.createElement('div');
+    div.style.width = '350px';
+    div.style.display = 'flex';
+    div.style.flexDirection = 'column';
+    div.style.alignItems = 'center';
+    div.style.justifyContent = 'flex-start';
+    div.style.gap = '20px';
 
-    wrapper.innerHTML += `
-      <div style="font-size:32px;color:#083560;font-weight:bold;background:white;margin-bottom:20px;padding:10px 0;border-radius:8px;">
-        ${cat}
-      </div>
-    `;
+    const title = document.createElement('div');
+    title.textContent = cat;
+    title.style.fontSize = '32px';
+    title.style.color = '#083560';
+    title.style.fontWeight = 'bold';
+    title.style.backgroundColor = 'white';
+    title.style.width = '100%';
+    title.style.height = '60px';
+    title.style.display = 'flex';
+    title.style.alignItems = 'center';
+    title.style.justifyContent = 'center';
+    title.style.borderRadius = '12px';
+    div.appendChild(title);
 
     horariosPorCategoria[cat].forEach(hora => {
-      wrapper.innerHTML += `
-        <div style="
-          font-size:34px;
-          height:60px;
-          line-height:60px;
-          margin-bottom:11px;
-          background:#083560;
-          color:white;
-          border-radius:8px;">
-          ${hora}
-        </div>
-      `;
+      const horarioBox = document.createElement('div');
+      horarioBox.textContent = hora;
+      horarioBox.style.width = '100%';
+      horarioBox.style.height = '65px';
+      horarioBox.style.backgroundColor = '#083560';
+      horarioBox.style.display = 'flex';
+      horarioBox.style.alignItems = 'center';
+      horarioBox.style.justifyContent = 'center';
+      horarioBox.style.fontSize = '30px';
+      horarioBox.style.color = 'white';
+      horarioBox.style.fontWeight = '600';
+      horarioBox.style.borderRadius = '10px';
+      div.appendChild(horarioBox);
     });
 
-    bloques.appendChild(wrapper);
+    bloques.appendChild(div);
   });
 
   container.appendChild(bloques);
@@ -269,4 +281,3 @@
     });
   });
 }
-
