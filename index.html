@@ -16,7 +16,7 @@
       background: white;
       padding: 16px;
       margin: 0 auto 30px auto;
-      border-radius: 16px;
+      border-radius: 10px;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
       max-width: 400px;
     }
@@ -31,7 +31,7 @@
     .section-title h3 {
       margin: 0;
       color: #083560;
-      font-size: 24px;
+      font-size: 20px;
       font-weight: bold;
     }
 
@@ -51,7 +51,7 @@
     .horarios-grid button {
       padding: 12px;
       border: none;
-      border-radius: 14px;
+      border-radius: 5px;
       background-color: #e5ebf2;
       cursor: pointer;
       font-size: 14px;
@@ -73,19 +73,21 @@
 
     button#generar {
       display: block;
-      margin: 30px auto 0;
+      margin: -20px auto 0;
       background: #2563eb;
       color: white;
       font-weight: bold;
       padding: 12px 24px;
       border: none;
-      border-radius: 8px;
+      border-radius: 5px;
       cursor: pointer;
     }
 
     #imagenContainer {
-      width: 1080px;
-      height: 1920px;
+      max-width: 400px;
+      display: flex;
+      height: 10px;
+      margin: 10px auto;
       overflow: hidden;
       position: relative;
     }
@@ -105,9 +107,7 @@
   <div id="horarios"></div>
   <button id="generar" onclick="generarImagen()">Generar Imagen</button>
 
-<!--  overflow: auto; -->
-    
-  <div style="width: 270px; height:480px;">
+  <div style="width: 100%; overflow: auto;">
     <div id="imagenContainer" style="display:none;"></div>
     <div id="previewContainer"></div>
   </div>
@@ -131,16 +131,29 @@
 
       const title = document.createElement("h3");
       title.textContent = cancha;
+      titleDiv.appendChild(title);
+
+      const actionsDiv = document.createElement("div");
+      actionsDiv.style.display = "flex";
+      actionsDiv.style.gap = "8px";
 
       const selectAll = document.createElement("span");
-      selectAll.textContent = "Seleccionar todos";
+      selectAll.textContent = "✅ Seleccionar";
       selectAll.className = "select-all";
       selectAll.onclick = () => {
         section.querySelectorAll("button").forEach(btn => btn.classList.add("selected"));
       };
 
-      titleDiv.appendChild(title);
-      titleDiv.appendChild(selectAll);
+      const clearAll = document.createElement("span");
+      clearAll.textContent = "❌ Eliminar";
+      clearAll.className = "select-all";
+      clearAll.onclick = () => {
+        section.querySelectorAll("button").forEach(btn => btn.classList.remove("selected"));
+      };
+
+      actionsDiv.appendChild(selectAll);
+      actionsDiv.appendChild(clearAll);
+      titleDiv.appendChild(actionsDiv);
       section.appendChild(titleDiv);
 
       const grid = document.createElement("div");
@@ -178,15 +191,6 @@
         return;
       }
 
-      const categoriaConCeroHorarios = categorias.find(cat => {
-        return !seleccionados.some(sel => sel.startsWith(cat));
-      });
-
-      if (categoriaConCeroHorarios) {
-        alert(`Debes seleccionar al menos un horario para cada categoría.`);
-        return;
-      }
-
       const fechaInput = document.getElementById('fecha').value;
       const fecha = fechaInput ? new Date(fechaInput) : new Date();
       const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
@@ -218,7 +222,7 @@
 
       html += `</div></div>`;
 
-const imagenContainer = document.getElementById('imagenContainer');
+      const imagenContainer = document.getElementById('imagenContainer');
       imagenContainer.innerHTML = html;
       imagenContainer.style.display = "block";
 
@@ -231,13 +235,11 @@ const imagenContainer = document.getElementById('imagenContainer');
         canvas.toBlob(blob => {
           const url = URL.createObjectURL(blob);
 
-          // Descargar la imagen automáticamente
           const link = document.createElement('a');
           link.href = url;
           link.download = 'horarios.png';
           link.click();
 
-          // Mostrar preview
           const previewContainer = document.getElementById('previewContainer');
           previewContainer.innerHTML = '';
           const img = new Image();
