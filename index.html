@@ -203,25 +203,30 @@
     <div style="background-color:rgba(0,0,0,0.6);position:absolute;width:100%;height:100%;top:0;left:0; z-index: 1;"></div>
     <img src="donBalonLogo.png" style="position:absolute;top:80px;right:80px;width:100px; z-index: 2;">
     <div style="position:absolute;top:300px;width:100%;text-align:center;color:white; z-index: 2;">
-      <div style="font-size:115px;font-weight:bold;">TURNOS</div>
-      <div style="font-size:40px;margin-top:0px;">DISPONIBLES HOY</div>
-      <div style="font-size:36px;margin-top:10px;">${fechaFormateada}</div>
+      <div style="font-size:125px;font-weight:bold;">TURNOS</div>
+      <div style="font-size:50px;margin-top:15px;">DISPONIBLES HOY</div>
+      <div style="font-size:46px;margin-top:25px;">${fechaFormateada}</div>
     </div>
-    <div style="position:absolute;top:650px;left:50%;transform:translateX(-50%);display:flex;gap:50px; z-index: 2;">`;
+    <div style="position:absolute;top:700px;left:50%;transform:translateX(-50%);display:flex;gap:50px; z-index: 2;">`;
 
   categorias.forEach(cat => {
-    html += `<div style="width:350px;display:flex;flex-direction:column;align-items:center;">
-      <div style="font-size:32px;background:white;color:#083560;font-weight:bold;height:60px;width:100%;display:flex;justify-content:center;align-items:center;border-radius:12px;margin-bottom:20px;">${cat}</div>`;
+    html += `<div style="width:370px;display:flex;flex-direction:column;align-items:center;">
+      <div style="font-size:40px;background:white;color:#083560;font-weight:bold;height:70px;width:100%;display:flex;justify-content:center;align-items:center;border-radius:5px;margin-bottom:20px;">${cat}</div>`;
 
     seleccionados.filter(txt => txt.startsWith(cat)).forEach(txt => {
       const hora = txt.split(' - ')[1];
-      html += `<div style="height:65px;width:100%;background:#083560;color:white;font-size:30px;font-weight:600;display:flex;justify-content:center;align-items:center;border-radius:10px;margin-bottom:15px;">${hora}</div>`;
+      html += `<div style="height:75px;width:100%;background:#083560;color:white;font-size:40px;font-weight:300;display:flex;justify-content:center;align-items:center;border-radius:10px;margin-bottom:15px;">${hora}</div>`;
+
     });
 
     html += `</div>`;
   });
 
-  html += `</div></div>`;
+  html += `</div><div style="position:absolute;bottom:230px;width:100%;text-align:center;z-index:2;">
+  <div style="font-size:50px;font-weight:bold;color:white;">091 061 822</div>
+
+  <div style="position:absolute;bottom:-50px;width:100%;text-align:center;z-index:2;">
+  <div style="font-size:25px;color:white;">Don Balón</div></div>`;
 
   const imagenContainer = document.getElementById('imagenContainer');
   imagenContainer.innerHTML = html;
