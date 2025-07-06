@@ -146,7 +146,7 @@
 
       horarios.forEach(h => {
         const btn = document.createElement("button");
-        btn.textContent = `${cancha} - ${h}`;
+        btn.textContent = `${h}`;
         btn.setAttribute("data-full", `${cancha} - ${h}`);
         btn.onclick = () => btn.classList.toggle("selected");
         grid.appendChild(btn);
@@ -243,7 +243,7 @@ const imagenContainer = document.getElementById('imagenContainer');
           img.style.width = '270px';
           img.style.height = '480px';
           img.alt = 'Preview';
-          // previewContainer.appendChild(img);
+          previewContainer.appendChild(img);
         });
       });
     }
