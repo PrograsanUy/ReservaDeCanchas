@@ -243,11 +243,14 @@
 
           const previewContainer = document.getElementById('previewContainer');
           previewContainer.innerHTML = '';
+          previewContainer.style.display = 'flex';
+          previewContainer.style.justifyContent = 'center';
+          
           const img = new Image();
           img.src = url;
           img.style.width = '270px';
           img.style.height = '480px';
-          img.style.margin = '10px auto';
+          img.style.margin = '10px';
           img.alt = 'Preview';
           previewContainer.appendChild(img);
         });
