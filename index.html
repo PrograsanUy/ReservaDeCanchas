@@ -178,68 +178,68 @@
     }
 
     function generarImagen() {
-      const seleccionados = Array.from(document.querySelectorAll("#horarios button.selected"))
-        .map(b => b.getAttribute("data-full"));
-      const categorias = [...new Set(seleccionados.map(txt => txt.split(' - ')[0]))];
+  const seleccionados = Array.from(document.querySelectorAll("#horarios button.selected"))
+    .map(b => b.getAttribute("data-full"));
+  const categorias = [...new Set(seleccionados.map(txt => txt.split(' - ')[0]))];
 
-      if (categorias.length === 0) {
-        alert("Debes seleccionar al menos una categoría con horarios.");
-        return;
-      }
+  if (categorias.length === 0) {
+    alert("Debes seleccionar al menos una categoría con horarios.");
+    return;
+  }
 
-      if (categorias.length > 2) {
-        alert("Solo puedes seleccionar horarios de hasta 2 canchas distintas.");
-        return;
-      }
+  if (categorias.length > 2) {
+    alert("Solo puedes seleccionar horarios de hasta 2 canchas distintas.");
+    return;
+  }
 
-      const fechaInput = document.getElementById('fecha').value;
-      const fecha = fechaInput ? new Date(fechaInput) : new Date();
-      const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
-      const dia = fecha.getDate().toString().padStart(2, '0');
-      const fechaFormateada = `${mes}.${dia}`;
+  const fechaInput = document.getElementById('fecha').value;
+  const fecha = fechaInput ? new Date(fechaInput) : new Date();
+  const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
+  const dia = fecha.getDate().toString().padStart(2, '0');
+  const fechaFormateada = `${mes}.${dia}`;
 
-      let html = `<div style="position:relative;width:1080px;height:1920px;font-family:sans-serif;">
-        <img src="${getRandomBackground()}" style="position:absolute;width:100%;height:100%;object-fit:cover;">
-        <div style="background-color:rgba(0,0,0,0.6);position:absolute;width:100%;height:100%;top:0;left:0;"></div>
-        <img src="donBalonLogo.png" style="position:absolute;top:80px;right:80px;width:100px;">
-        <div style="position:absolute;top:300px;width:100%;text-align:center;color:white;">
-          <div style="font-size:115px;font-weight:bold;">TURNOS</div>
-          <div style="font-size:40px;margin-top:0px;">DISPONIBLES HOY</div>
-          <div style="font-size:36px;margin-top:10px;">${fechaFormateada}</div>
-        </div>
-        <div style="position:absolute;top:650px;left:50%;transform:translateX(-50%);display:flex;gap:50px;">`;
+  let html = `<div style="position:relative;width:1080px;height:1920px;font-family:sans-serif;">
+    <img src="${getRandomBackground()}" style="position:absolute;width:100%;height:100%;object-fit:cover; z-index: 0;">
+    <div style="background-color:rgba(0,0,0,0.6);position:absolute;width:100%;height:100%;top:0;left:0; z-index: 1;"></div>
+    <img src="donBalonLogo.png" style="position:absolute;top:80px;right:80px;width:100px; z-index: 2;">
+    <div style="position:absolute;top:300px;width:100%;text-align:center;color:white; z-index: 2;">
+      <div style="font-size:115px;font-weight:bold;">TURNOS</div>
+      <div style="font-size:40px;margin-top:0px;">DISPONIBLES HOY</div>
+      <div style="font-size:36px;margin-top:10px;">${fechaFormateada}</div>
+    </div>
+    <div style="position:absolute;top:650px;left:50%;transform:translateX(-50%);display:flex;gap:50px; z-index: 2;">`;
 
-      categorias.forEach(cat => {
-        html += `<div style="width:350px;display:flex;flex-direction:column;align-items:center;">
-          <div style="font-size:32px;background:white;color:#083560;font-weight:bold;height:60px;width:100%;display:flex;justify-content:center;align-items:center;border-radius:12px;margin-bottom:20px;">${cat}</div>`;
+  categorias.forEach(cat => {
+    html += `<div style="width:350px;display:flex;flex-direction:column;align-items:center;">
+      <div style="font-size:32px;background:white;color:#083560;font-weight:bold;height:60px;width:100%;display:flex;justify-content:center;align-items:center;border-radius:12px;margin-bottom:20px;">${cat}</div>`;
 
-        seleccionados.filter(txt => txt.startsWith(cat)).forEach(txt => {
-          const hora = txt.split(' - ')[1];
-          html += `<div style="height:65px;width:100%;background:#083560;color:white;font-size:30px;font-weight:600;display:flex;justify-content:center;align-items:center;border-radius:10px;margin-bottom:15px;">${hora}</div>`;
-        });
+    seleccionados.filter(txt => txt.startsWith(cat)).forEach(txt => {
+      const hora = txt.split(' - ')[1];
+      html += `<div style="height:65px;width:100%;background:#083560;color:white;font-size:30px;font-weight:600;display:flex;justify-content:center;align-items:center;border-radius:10px;margin-bottom:15px;">${hora}</div>`;
+    });
 
-        html += `</div>`;
-      });
+    html += `</div>`;
+  });
 
-      html += `</div></div>`;
+  html += `</div></div>`;
 
-      const imagenContainer = document.getElementById('imagenContainer');
-      imagenContainer.innerHTML = html;
-      imagenContainer.style.display = "block";
+  const imagenContainer = document.getElementById('imagenContainer');
+  imagenContainer.innerHTML = html;
+  imagenContainer.style.display = "block";
 
-      html2canvas(imagenContainer.firstChild, {
-        useCORS: true,
-        width: 1080,
-        height: 1920,
-        scale: 1
-      }).then(canvas => {
-        canvas.toBlob(blob => {
-          const url = URL.createObjectURL(blob);
+  html2canvas(imagenContainer.firstChild, {
+    useCORS: true,
+    width: 1080,
+    height: 1920,
+    scale: 1
+  }).then(canvas => {
+    canvas.toBlob(blob => {
+      const url = URL.createObjectURL(blob);
 
-          const link = document.createElement('a');
-          link.href = url;
-          link.download = 'horarios.png';
-          link.click();
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'horarios.png';
+      link.click();
 
           const previewContainer = document.getElementById('previewContainer');
           previewContainer.innerHTML = '';
