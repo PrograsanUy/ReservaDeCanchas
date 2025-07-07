@@ -180,7 +180,7 @@
     function generarImagen() {
       const boton = document.getElementById('generar');
       boton.disabled = true;
-      boton.textContent = 'Imagen Generada';
+      boton.textContent = 'Generando...';
 
       const seleccionados = Array.from(document.querySelectorAll("#horarios button.selected"))
         .map(b => b.getAttribute("data-full"));
@@ -207,7 +207,7 @@
       const fechaFormateada = `${mes}.${dia}`;
 
       let html = `<div style="position:relative;width:1080px;height:1920px;font-family:sans-serif;">
-        <img src="${getRandomBackground()}" style="position:absolute;width:100%;height:100%;object-fit:cover; z-index: 0;">
+        <div style="position:absolute;width:100%;height:100%;background-image:url('${getRandomBackground()}');background-size:cover;background-position:center; z-index: 0;"></div>
         <div style="background-color:rgba(0,0,0,0.6);position:absolute;width:100%;height:100%;top:0;left:0; z-index: 1;"></div>
         <img src="donBalonLogo.png" style="position:absolute;top:80px;right:80px;width:100px; z-index: 2;">
         <div style="position:absolute;top:300px;width:100%;text-align:center;color:white; z-index: 2;text-shadow:2px 2px 5px rgba(0,0,0,0.7);">
