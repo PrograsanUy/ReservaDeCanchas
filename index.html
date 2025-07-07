@@ -2,60 +2,16 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <link rel="icon" href="donBalonLogo.ico" type="image/x-icon" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>App de Canchas - Don Balón</title>
+  <link rel="icon" href="donBalonLogo.ico" type="image/x-icon">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Generador de Horarios - Canchas</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
     body {
       font-family: sans-serif;
       background: #f0f0f0;
-      margin: 0;
       padding: 20px;
     }
-
-    header {
-      background: #083560;
-      color: white;
-      padding: 12px 20px;
-      text-align: center;
-      font-size: 18px;
-      font-weight: bold;
-      margin-bottom: 20px;
-    }
-
-    nav {
-      display: flex;
-      justify-content: center;
-      background: #ffffff;
-      border-bottom: 1px solid #ccc;
-      margin-bottom: 20px;
-    }
-
-    nav button {
-      background: none;
-      border: none;
-      padding: 12px 16px;
-      cursor: pointer;
-      font-weight: bold;
-      color: #083560;
-      font-size: 16px;
-    }
-
-    nav button.active {
-      background: #e0e7ff;
-      border-bottom: 3px solid #2563eb;
-    }
-
-    .seccion {
-      display: none;
-    }
-
-    .seccion.activa {
-      display: block;
-    }
-
-    /* Aquí tu estilo original para horarios */
 
     .section {
       background: white;
@@ -135,7 +91,6 @@
       margin: 10px auto;
       overflow: hidden;
       position: relative;
-      display: none;
     }
 
     #previewContainer img {
@@ -143,54 +98,9 @@
       height: 480px;
       margin-top: 20px;
     }
-
-    /* Estilos para las otras secciones */
-
-    .form-group {
-      margin-bottom: 16px;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: bold;
-    }
-
-    input, select {
-      width: 100%;
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      font-size: 14px;
-    }
-
-    button.generar {
-      background: #2563eb;
-      color: white;
-      padding: 12px 24px;
-      border: none;
-      border-radius: 5px;
-      font-weight: bold;
-      cursor: pointer;
-      display: block;
-      margin-top: 10px;
-      width: 100%;
-      max-width: 400px;
-    }
   </style>
 </head>
 <body>
-
-<header>App de Canchas - Don Balón</header>
-
-<nav>
-  <button class="tab active" onclick="mostrarSeccion('horarios')">Horarios</button>
-  <button class="tab" onclick="mostrarSeccion('buscarRival')">Buscar Rival</button>
-  <button class="tab" onclick="mostrarSeccion('estado')">Estado del Día</button>
-</nav>
-
-<!-- SECCIÓN HORARIOS (copiada EXACTAMENTE de tu código original) -->
-<div id="seccion-horarios" class="seccion activa">
 
   <h1 style="text-align:center; font-size:19px; margin-bottom:20px;">Generador de Horarios - Canchas</h1>
 
@@ -199,284 +109,166 @@
   <button id="generar" onclick="generarImagen()">Generar Imagen</button>
 
   <div style="width: 100%; overflow: auto;">
-    <div id="imagenContainer"></div>
+    <div id="imagenContainer" style="display:none;"></div>
     <div id="previewContainer"></div>
   </div>
 
-</div>
-
-<!-- SECCIÓN BUSCAR RIVAL -->
-<div id="seccion-buscarRival" class="seccion">
-  <h2>Se busca rival</h2>
-  <div class="form-group">
-    <label for="rivalCancha">Cancha:</label>
-    <select id="rivalCancha">
-      <option value="FÚTBOL 5">FÚTBOL 5</option>
-      <option value="FÚTBOL 6">FÚTBOL 6</option>
-      <option value="FÚTBOL 7">FÚTBOL 7</option>
-      <option value="PÁDEL">PÁDEL</option>
-    </select>
-  </div>
-  <div class="form-group">
-    <label for="rivalHora">Hora:</label>
-    <input id="rivalHora" type="time" />
-  </div>
-  <button class="generar" onclick="generarBuscarRival()">Generar Imagen</button>
-</div>
-
-<!-- SECCIÓN ESTADO DEL DÍA -->
-<div id="seccion-estado" class="seccion">
-  <h2>Estado del Día</h2>
-  <div class="form-group">
-    <label for="estadoDia">Estado:</label>
-    <select id="estadoDia">
-      <option value="Abierto">Abierto</option>
-      <option value="Cerrado">Cerrado</option>
-    </select>
-  </div>
-  <button class="generar" onclick="generarEstadoDia()">Generar Imagen</button>
-</div>
-
-<script>
-  // Cambiar secciones
-  function mostrarSeccion(id) {
-    document.querySelectorAll(".seccion").forEach(s => s.classList.remove("activa"));
-    document.getElementById("seccion-" + id).classList.add("activa");
-    document.querySelectorAll("nav button").forEach(b => b.classList.remove("active"));
-    document.querySelector(`nav button[onclick*='${id}']`).classList.add("active");
-  }
-
-  // --- Código de horarios tal cual lo tenías ---
-  const horariosPorCancha = {
-    'FÚTBOL 5': ["16:00 Hs", "17:00 Hs", "18:00 Hs", "19:00 Hs", "20:00 Hs", "21:00 Hs", "22:00 Hs"],
-    'FÚTBOL 6': ["16:00 Hs", "17:00 Hs", "18:00 Hs", "19:00 Hs", "20:00 Hs", "21:00 Hs", "22:00 Hs"],
-    'FÚTBOL 7': ["16:00 Hs", "17:00 Hs", "18:00 Hs", "19:00 Hs", "20:00 Hs", "21:00 Hs", "22:00 Hs"],
-    'PÁDEL': ["16:00 Hs", "17:30 Hs", "19:00 Hs", "20:30 Hs", "22:00 Hs"]
-  };
-
-  const horariosDiv = document.getElementById("horarios");
-
-  Object.entries(horariosPorCancha).forEach(([cancha, horarios]) => {
-    const section = document.createElement("div");
-    section.className = "section";
-
-    const titleDiv = document.createElement("div");
-    titleDiv.className = "section-title";
-
-    const title = document.createElement("h3");
-    title.textContent = cancha;
-    titleDiv.appendChild(title);
-
-    const actionsDiv = document.createElement("div");
-    actionsDiv.style.display = "flex";
-    actionsDiv.style.gap = "8px";
-
-    const selectAll = document.createElement("span");
-    selectAll.textContent = "✅ Seleccionar";
-    selectAll.className = "select-all";
-    selectAll.onclick = () => {
-      section.querySelectorAll("button").forEach(btn => btn.classList.add("selected"));
+  <script>
+    const horariosPorCancha = {
+      'FÚTBOL 5': ["16:00 Hs", "17:00 Hs", "18:00 Hs", "19:00 Hs", "20:00 Hs", "21:00 Hs", "22:00 Hs"],
+      'FÚTBOL 6': ["16:00 Hs", "17:00 Hs", "18:00 Hs", "19:00 Hs", "20:00 Hs", "21:00 Hs", "22:00 Hs"],
+      'FÚTBOL 7': ["16:00 Hs", "17:00 Hs", "18:00 Hs", "19:00 Hs", "20:00 Hs", "21:00 Hs", "22:00 Hs"],
+      'PÁDEL': ["16:00 Hs", "17:30 Hs", "19:00 Hs", "20:30 Hs", "22:00 Hs"]
     };
 
-    const clearAll = document.createElement("span");
-    clearAll.textContent = "❌ Eliminar";
-    clearAll.className = "select-all";
-    clearAll.onclick = () => {
-      section.querySelectorAll("button").forEach(btn => btn.classList.remove("selected"));
-    };
+    const horariosDiv = document.getElementById("horarios");
 
-    actionsDiv.appendChild(selectAll);
-    actionsDiv.appendChild(clearAll);
-    titleDiv.appendChild(actionsDiv);
-    section.appendChild(titleDiv);
+    Object.entries(horariosPorCancha).forEach(([cancha, horarios]) => {
+      const section = document.createElement("div");
+      section.className = "section";
 
-    const grid = document.createElement("div");
-    grid.className = "horarios-grid";
+      const titleDiv = document.createElement("div");
+      titleDiv.className = "section-title";
 
-    horarios.forEach(h => {
-      const btn = document.createElement("button");
-      btn.textContent = `${h}`;
-      btn.setAttribute("data-full", `${cancha} - ${h}`);
-      btn.onclick = () => btn.classList.toggle("selected");
-      grid.appendChild(btn);
-    });
+      const title = document.createElement("h3");
+      title.textContent = cancha;
+      titleDiv.appendChild(title);
 
-    section.appendChild(grid);
-    horariosDiv.appendChild(section);
-  });
+      const actionsDiv = document.createElement("div");
+      actionsDiv.style.display = "flex";
+      actionsDiv.style.gap = "8px";
 
-  function getRandomBackground() {
-    const fondos = ["fondos/f1.jpg", "fondos/f2.jpg", "fondos/f3.jpg", "fondos/f4.jpg", "fondos/f5.jpg"];
-    return fondos[Math.floor(Math.random() * fondos.length)];
-  }
+      const selectAll = document.createElement("span");
+      selectAll.textContent = "✅ Seleccionar";
+      selectAll.className = "select-all";
+      selectAll.onclick = () => {
+        section.querySelectorAll("button").forEach(btn => btn.classList.add("selected"));
+      };
 
-  function generarImagen() {
-    const boton = document.getElementById('generar');
-    boton.disabled = true;
-    boton.textContent = 'Generando...';
+      const clearAll = document.createElement("span");
+      clearAll.textContent = "❌ Eliminar";
+      clearAll.className = "select-all";
+      clearAll.onclick = () => {
+        section.querySelectorAll("button").forEach(btn => btn.classList.remove("selected"));
+      };
 
-    const seleccionados = Array.from(document.querySelectorAll("#horarios button.selected"))
-      .map(b => b.getAttribute("data-full"));
-    const categorias = [...new Set(seleccionados.map(txt => txt.split(' - ')[0]))];
+      actionsDiv.appendChild(selectAll);
+      actionsDiv.appendChild(clearAll);
+      titleDiv.appendChild(actionsDiv);
+      section.appendChild(titleDiv);
 
-    if (categorias.length === 0) {
-      alert("Debes seleccionar al menos una categoría con horarios.");
-      boton.disabled = false;
-      boton.textContent = 'Generar Imagen';
-      return;
-    }
+      const grid = document.createElement("div");
+      grid.className = "horarios-grid";
 
-    if (categorias.length > 2) {
-      alert("Solo puedes seleccionar horarios de hasta 2 canchas distintas.");
-      boton.disabled = false;
-      boton.textContent = 'Generar Imagen';
-      return;
-    }
-
-    const fechaInput = document.getElementById('fecha').value;
-    const fecha = fechaInput ? new Date(fechaInput) : new Date();
-    const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
-    const dia = fecha.getDate().toString().padStart(2, '0');
-    const fechaFormateada = `${mes}.${dia}`;
-
-    let html = `<div style="position:relative;width:1080px;height:1920px;font-family:sans-serif;">
-      <div style="position:absolute;width:100%;height:100%;background-image:url('${getRandomBackground()}');background-size:cover;background-position:center; z-index: 0;"></div>
-      <div style="background-color:rgba(0,0,0,0.6);position:absolute;width:100%;height:100%;top:0;left:0; z-index: 1;"></div>
-      <img src="donBalonLogo.png" style="position:absolute;top:80px;right:80px;width:100px; z-index: 2;">
-      <div style="position:absolute;top:300px;width:100%;text-align:center;color:white; z-index: 2;text-shadow:2px 2px 5px rgba(0,0,0,0.7);">
-        <div style="font-size:125px;font-weight:bold;">TURNOS</div>
-        <div style="font-size:50px;margin-top:15px;">DISPONIBLES HOY</div>
-        <div style="font-size:46px;margin-top:25px;">${fechaFormateada}</div>
-      </div>
-      <div style="position:absolute;top:700px;left:50%;transform:translateX(-50%);display:flex;gap:50px; z-index: 2;">`;
-
-    categorias.forEach(cat => {
-      html += `<div style="width:370px;display:flex;flex-direction:column;align-items:center;">
-        <div style="font-size:40px;background:white;color:#083560;font-weight:bold;height:70px;width:100%;display:flex;justify-content:center;align-items:center;border-radius:5px;margin-bottom:20px;">${cat}</div>`;
-      seleccionados.filter(txt => txt.startsWith(cat)).forEach(txt => {
-        const hora = txt.split(' - ')[1];
-        html += `<div style="height:75px;width:100%;background:#083560;color:white;font-size:40px;font-weight:300;display:flex;justify-content:center;align-items:center;border-radius:10px;margin-bottom:25px;">${hora}</div>`;
+      horarios.forEach(h => {
+        const btn = document.createElement("button");
+        btn.textContent = `${h}`;
+        btn.setAttribute("data-full", `${cancha} - ${h}`);
+        btn.onclick = () => btn.classList.toggle("selected");
+        grid.appendChild(btn);
       });
-      html += `</div>`;
+
+      section.appendChild(grid);
+      horariosDiv.appendChild(section);
     });
 
-    html += `
-      </div>
-      <div style="position:absolute;bottom:230px;width:100%;text-align:center;z-index:2;text-shadow:2px 2px 5px rgba(0,0,0,0.7);">
-        <div style="font-size:55px;font-weight:bold;color:white;">091 061 822</div>
-        <div style="font-size:30px;color:white;margin-top:10px;">Don Balón</div>
-      </div>
-    </div>`;
+    function getRandomBackground() {
+      const fondos = ["fondos/f1.jpg", "fondos/f2.jpg", "fondos/f3.jpg", "fondos/f4.jpg", "fondos/f5.jpg"];
+      return fondos[Math.floor(Math.random() * fondos.length)];
+    }
 
-    const imagenContainer = document.getElementById('imagenContainer');
-    imagenContainer.innerHTML = html;
-    imagenContainer.style.display = "flex";
+    function generarImagen() {
+      const boton = document.getElementById('generar');
+      boton.disabled = true;
+      boton.textContent = 'Generando...';
 
-    html2canvas(imagenContainer.firstChild, {
-      useCORS: true,
-      width: 1080,
-      height: 1920,
-      scale: 2
-    }).then(canvas => {
-      canvas.toBlob(blob => {
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = 'horarios.png';
-        link.click();
+      const seleccionados = Array.from(document.querySelectorAll("#horarios button.selected"))
+        .map(b => b.getAttribute("data-full"));
+      const categorias = [...new Set(seleccionados.map(txt => txt.split(' - ')[0]))];
 
-        const previewContainer = document.getElementById('previewContainer');
-        previewContainer.innerHTML = '';
-        previewContainer.style.display = 'flex';
-        previewContainer.style.justifyContent = 'center';
-
-        const img = new Image();
-        img.src = url;
-        img.style.width = '270px';
-        img.style.height = '480px';
-        img.alt = 'Preview';
-        previewContainer.appendChild(img);
-
+      if (categorias.length === 0) {
+        alert("Debes seleccionar al menos una categoría con horarios.");
         boton.disabled = false;
         boton.textContent = 'Generar Imagen';
+        return;
+      }
+
+      if (categorias.length > 2) {
+        alert("Solo puedes seleccionar horarios de hasta 2 canchas distintas.");
+        boton.disabled = false;
+        boton.textContent = 'Generar Imagen';
+        return;
+      }
+
+      const fechaInput = document.getElementById('fecha').value;
+      const fecha = fechaInput ? new Date(fechaInput) : new Date();
+      const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
+      const dia = fecha.getDate().toString().padStart(2, '0');
+      const fechaFormateada = `${mes}.${dia}`;
+
+      let html = `<div style="position:relative;width:1080px;height:1920px;font-family:sans-serif;">
+        <div style="position:absolute;width:100%;height:100%;background-image:url('${getRandomBackground()}');background-size:cover;background-position:center; z-index: 0;"></div>
+        <div style="background-color:rgba(0,0,0,0.6);position:absolute;width:100%;height:100%;top:0;left:0; z-index: 1;"></div>
+        <img src="donBalonLogo.png" style="position:absolute;top:80px;right:80px;width:100px; z-index: 2;">
+        <div style="position:absolute;top:300px;width:100%;text-align:center;color:white; z-index: 2;text-shadow:2px 2px 5px rgba(0,0,0,0.7);">
+          <div style="font-size:125px;font-weight:bold;">TURNOS</div>
+          <div style="font-size:50px;margin-top:15px;">DISPONIBLES HOY</div>
+          <div style="font-size:46px;margin-top:25px;">${fechaFormateada}</div>
+        </div>
+        <div style="position:absolute;top:700px;left:50%;transform:translateX(-50%);display:flex;gap:50px; z-index: 2;">`;
+
+      categorias.forEach(cat => {
+        html += `<div style="width:370px;display:flex;flex-direction:column;align-items:center;">
+          <div style="font-size:40px;background:white;color:#083560;font-weight:bold;height:70px;width:100%;display:flex;justify-content:center;align-items:center;border-radius:5px;margin-bottom:20px;">${cat}</div>`;
+        seleccionados.filter(txt => txt.startsWith(cat)).forEach(txt => {
+          const hora = txt.split(' - ')[1];
+          html += `<div style="height:75px;width:100%;background:#083560;color:white;font-size:40px;font-weight:300;display:flex;justify-content:center;align-items:center;border-radius:10px;margin-bottom:25px;">${hora}</div>`;
+        });
+        html += `</div>`;
       });
-    });
-  }
 
-  // Funciones para las otras secciones (Buscar Rival y Estado del Día)
-  function getRandomBackground() {
-    const fondos = ["fondos/f1.jpg", "fondos/f2.jpg", "fondos/f3.jpg", "fondos/f4.jpg", "fondos/f5.jpg"];
-    return fondos[Math.floor(Math.random() * fondos.length)];
-  }
+      html += `
+        </div>
+        <div style="position:absolute;bottom:230px;width:100%;text-align:center;z-index:2;text-shadow:2px 2px 5px rgba(0,0,0,0.7);">
+          <div style="font-size:55px;font-weight:bold;color:white;">091 061 822</div>
+          <div style="font-size:30px;color:white;margin-top:10px;">Don Balón</div>
+        </div>
+      </div>`;
 
-  function generarBuscarRival() {
-    const cancha = document.getElementById('rivalCancha').value;
-    const hora = document.getElementById('rivalHora').value;
-    if (!hora) return alert('Selecciona una hora');
+      const imagenContainer = document.getElementById('imagenContainer');
+      imagenContainer.innerHTML = html;
+      imagenContainer.style.display = "block";
 
-    let html = `<div style="position:relative;width:1080px;height:1920px;font-family:sans-serif;">
-      <div style="position:absolute;width:100%;height:100%;background-image:url('${getRandomBackground()}');background-size:cover;background-position:center; z-index: 0;"></div>
-      <div style="background-color:rgba(0,0,0,0.6);position:absolute;width:100%;height:100%;top:0;left:0; z-index: 1;"></div>
-      <img src="donBalonLogo.png" style="position:absolute;top:80px;right:80px;width:100px; z-index: 2;">
-      <div style="position:absolute;top:40%;width:100%;text-align:center;color:white;z-index:2;text-shadow:2px 2px 5px rgba(0,0,0,0.7);">
-        <div style="font-size:75px;font-weight:bold;margin-bottom:25px;">SE BUSCA RIVAL</div>
-        <div style="font-size:50px;">${cancha} - ${hora} hs</div>
-      </div>
-      <div style="position:absolute;bottom:230px;width:100%;text-align:center;z-index:2;text-shadow:2px 2px 5px rgba(0,0,0,0.7);">
-        <div style="font-size:55px;font-weight:bold;color:white;">091 061 822</div>
-        <div style="font-size:30px;color:white;margin-top:10px;">Don Balón</div>
-      </div>
-    </div>`;
+      html2canvas(imagenContainer.firstChild, {
+        useCORS: true,
+        width: 1080,
+        height: 1920,
+        scale: 2
+      }).then(canvas => {
+        canvas.toBlob(blob => {
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = 'horarios.png';
+          link.click();
 
-    renderizarYDescargarImagen(html, 'buscar_rival');
-  }
+          const previewContainer = document.getElementById('previewContainer');
+          previewContainer.innerHTML = '';
+          previewContainer.style.display = 'flex';
+          previewContainer.style.justifyContent = 'center';
 
-  function generarEstadoDia() {
-    const estado = document.getElementById('estadoDia').value;
-    let html = `<div style="position:relative;width:1080px;height:1920px;font-family:sans-serif;">
-      <div style="position:absolute;width:100%;height:100%;background-image:url('${getRandomBackground()}');background-size:cover;background-position:center; z-index: 0;"></div>
-      <div style="background-color:rgba(0,0,0,0.6);position:absolute;width:100%;height:100%;top:0;left:0; z-index: 1;"></div>
-      <img src="donBalonLogo.png" style="position:absolute;top:80px;right:80px;width:100px; z-index: 2;">
-      <div style="position:absolute;top:40%;width:100%;text-align:center;color:white;z-index:2;text-shadow:2px 2px 5px rgba(0,0,0,0.7);">
-        <div style="font-size:90px;font-weight:bold;">HOY ESTÁ</div>
-        <div style="font-size:110px;font-weight:bold;margin-top:20px;color:${estado === 'Abierto' ? '#16a34a' : '#dc2626'}">${estado.toUpperCase()}</div>
-      </div>
-      <div style="position:absolute;bottom:230px;width:100%;text-align:center;z-index:2;text-shadow:2px 2px 5px rgba(0,0,0,0.7);">
-        <div style="font-size:55px;font-weight:bold;color:white;">091 061 822</div>
-        <div style="font-size:30px;color:white;margin-top:10px;">Don Balón</div>
-      </div>
-    </div>`;
+          const img = new Image();
+          img.src = url;
+          img.style.width = '270px';
+          img.style.height = '480px';
+          img.alt = 'Preview';
+          previewContainer.appendChild(img);
 
-    renderizarYDescargarImagen(html, 'estado_dia');
-  }
-
-  function renderizarYDescargarImagen(html, filename) {
-    const previewContainer = document.getElementById('previewContainer');
-    previewContainer.innerHTML = html;
-    html2canvas(previewContainer.firstChild, {
-      useCORS: true,
-      width: 1080,
-      height: 1920,
-      scale: 2
-    }).then(canvas => {
-      canvas.toBlob(blob => {
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `${filename}.png`;
-        link.click();
-
-        previewContainer.innerHTML = '';
-        const img = new Image();
-        img.src = url;
-        img.style.width = '270px';
-        img.style.height = '480px';
-        img.alt = 'Preview';
-        previewContainer.appendChild(img);
+          boton.disabled = false;
+          boton.textContent = 'Generar Imagen';
+        });
       });
-    });
-  }
-</script>
-
+    }
+  </script>
 </body>
 </html>
