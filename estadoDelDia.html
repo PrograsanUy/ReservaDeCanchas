@@ -2,9 +2,9 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <link rel="icon" href="logoProCanch.ico" type="image/x-icon">
+  <link rel="icon" href="donBalonLogo.ico" type="image/x-icon">
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ProCanch - DonBalon</title>
+  <title>Generador de Horarios - Canchas</title>
   <link rel="stylesheet" type="text/css" href="estilosGenerales.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
@@ -24,9 +24,9 @@
     </div>
   </div>
 
-  <h1 style="text-align:center; font-size:12px; margin-bottom:20px; color: grey;">Genera una imagen para avisar el estado del local</h1>
+  <h1 style="text-align:center; font-size:12px; margin-bottom:20px; color: grey;">Genera una imagen para buscar un rival</h1>
 
-<inputa id="fecha" type="date" />
+  <inputa id="fecha" type="date" />
   <div id="horarios"></div>
   <button id="generar" onclick="generarImagen()">Generar Imagen</button>
 
@@ -53,27 +53,6 @@
       title.textContent = cancha;
       titleDiv.appendChild(title);
 
-      const actionsDiv = document.createElement("div");
-      actionsDiv.style.display = "flex";
-      actionsDiv.style.gap = "8px";
-
-      // const selectAll = document.createElement("span");
-      // selectAll.textContent = "✅ Seleccionar";
-      // selectAll.className = "select-all";
-      // selectAll.onclick = () => {
-      //   section.querySelectorAll("button").forEach(btn => btn.classList.add("selected"));
-      // };
-
-      // const clearAll = document.createElement("span");
-      // clearAll.textContent = "❌ Eliminar";
-      // clearAll.className = "select-all";
-      // clearAll.onclick = () => {
-      //   section.querySelectorAll("button").forEach(btn => btn.classList.remove("selected"));
-      // };
-
-      // actionsDiv.appendChild(selectAll);
-      // actionsDiv.appendChild(clearAll);
-      titleDiv.appendChild(actionsDiv);
       section.appendChild(titleDiv);
 
       const grid = document.createElement("div");
@@ -83,7 +62,11 @@
         const btn = document.createElement("button");
         btn.textContent = `${h}`;
         btn.setAttribute("data-full", `${cancha} - ${h}`);
-        btn.onclick = () => btn.classList.toggle("selected");
+        btn.onclick = () => {
+          const botones = section.querySelectorAll("button");
+          botones.forEach(b => b.classList.remove("selected"));
+          btn.classList.add("selected");
+        };
         grid.appendChild(btn);
       });
 
@@ -93,7 +76,6 @@
 
     function getRandomBackground() {
       const fondos = ["fondos/f1.jpg", "fondos/f2.jpg", "fondos/f3.jpg", "fondos/f4.jpg", "fondos/f5.jpg"];
-      // const fondos = ["fondos/LineasGuias.png"];
       return fondos[Math.floor(Math.random() * fondos.length)];
     }
 
@@ -107,14 +89,7 @@
       const categorias = [...new Set(seleccionados.map(txt => txt.split(' - ')[0]))];
 
       if (categorias.length === 0) {
-        alert("Debes seleccionar al menos una categoría con horarios.");
-        boton.disabled = false;
-        boton.textContent = 'Generar Imagen';
-        return;
-      }
-
-      if (categorias.length > 2) {
-        alert("Solo puedes seleccionar horarios de hasta 2 canchas distintas.");
+        alert("Debes seleccionar al menos una opción.");
         boton.disabled = false;
         boton.textContent = 'Generar Imagen';
         return;
@@ -132,9 +107,7 @@
         <img src="donBalonLogo.png" style="position:absolute;top:80px;right:80px;width:100px; z-index: 2;">
         <div style="position:absolute;top:345px;width:100%;text-align:center;color:white; z-index: 2;text-shadow:2px 2px 5px rgba(0,0,0,0.7);">
         </div>
-        <div style="position:absolute;top:710px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center; z-index: 2;">
-
-`;
+        <div style="position:absolute;top:710px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center; z-index: 2;">`;
 
       categorias.forEach(cat => {
         html += `<div style="width:450px;display:flex;flex-direction:column;align-items:center;">
@@ -142,7 +115,6 @@
         seleccionados.filter(txt => txt.startsWith(cat)).forEach(txt => {
           const hora = txt.split(' - ')[1];
           html += `<div style="box-shadow:2px 2px 5px rgba(0,0,0,0.2); line-height:120px; height:120px;width:100%; font-weight:bold; text-align:center; color:white;font-size:90px;display:flex;justify-content:center;align-items:center;border-radius:10px;margin-bottom:80px;">${hora}</div>`;
-
         });
         html += `<div style="font-size:46px;margin-top:25px; color:white;">${fechaFormateada}</div></div>`;
       });
@@ -191,15 +163,14 @@
     }
   </script>
 
-
   <footer style="background:#f9f9f9;padding:20px 10px;display:flex;justify-content:center;align-items:center;gap:15px;font-family:sans-serif;flex-direction:column;">
-  <div style="display:flex;align-items:center;gap:10px;">
-    <img src="https://media.licdn.com/dms/image/v2/D4D03AQHpPmZG1XlYNw/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1728684808277?e=2147483647&v=beta&t=rZW8tcqm_JxCfceZur_cxUXU_znBVj6YPh7COW32_V8" 
-         alt="Prograsan logo" 
-         style="width:40px;height:40px;border-radius:50%;object-fit:cover;">
-    <span style="font-size:16px;color:#333;">Aplicación desarrollada por <strong style="color:#083560;"><a href="https://www.instagram.com/prograsan/">Prograsan</a></strong></span>
-  </div>
-</footer>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <img src="https://media.licdn.com/dms/image/v2/D4D03AQHpPmZG1XlYNw/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1728684808277?e=2147483647&v=beta&t=rZW8tcqm_JxCfceZur_cxUXU_znBVj6YPh7COW32_V8" 
+           alt="Prograsan logo" 
+           style="width:40px;height:40px;border-radius:50%;object-fit:cover;">
+      <span style="font-size:16px;color:#333;">Aplicación desarrollada por <strong style="color:#083560;"><a href="https://www.instagram.com/prograsan/">Prograsan</a></strong></span>
+    </div>
+  </footer>
 
 </body>
 </html>
