@@ -37,11 +37,10 @@
 
   <script>
     const horariosPorCancha = {
-      'FÚTBOL 5': ["16:00 Hs", "17:00 Hs", "18:00 Hs", "19:00 Hs", "20:00 Hs", "21:00 Hs", "22:00 Hs", "23:00 Hs"],
-      'FÚTBOL 6 O 7': ["16:00 Hs", "17:00 Hs", "18:00 Hs", "19:00 Hs", "20:00 Hs", "21:00 Hs", "22:00 Hs", "23:00 Hs"],
-      // 'FÚTBOL 7': ["16:00 Hs", "17:00 Hs", "18:00 Hs", "19:00 Hs", "20:00 Hs", "21:00 Hs", "22:00 Hs"],
-      'PÁDEL HORA': ["17 a 18 Hs", "18 a 19 Hs", "19 a 20 Hs", "20 a 21 Hs", "21 a 22 Hs", "22 a 23 Hs"],
-      'PÁDEL 1.30 H': ["17.30 a 19 Hs", "18 a 19.30 Hs", "19 a 20.30 Hs", "19.30 a 21 Hs", "20.30 a 22.00 Hs", "21 a 22.30 Hs"]
+      'FÚTBOL 5': ["16:00 ", "17:00 ", "18:00 ", "19:00 ", "20:00 ", "21:00 ", "22:00 ", "23:00 "],
+      'FÚTBOL 6 O 7': ["16:00 ", "17:00 ", "18:00 ", "19:00 ", "20:00 ", "21:00 ", "22:00 ", "23:00 "],
+      'PÁDEL HORA': ["17 a 18 ", "18 a 19 ", "19 a 20 ", "20 a 21 ", "21 a 22 ", "22 a 23 "],
+      'PÁDEL 1.30 H': ["17.30 a 19 ", "18 a 19.30 ", "19 a 20.30 ", "19.30 a 21 ", "20.30 a 22.00 ", "21 a 22.30 "]
     };
 
     const horariosDiv = document.getElementById("horarios");
@@ -65,6 +64,14 @@
       selectAll.textContent = "✅ Seleccionar";
       selectAll.className = "select-all";
       selectAll.onclick = () => {
+        const seleccionados = Array.from(document.querySelectorAll("#horarios button.selected"))
+          .map(b => b.getAttribute("data-full"));
+        const categoriasActuales = [...new Set(seleccionados.map(txt => txt.split(' - ')[0]))];
+
+        if (!categoriasActuales.includes(cancha) && categoriasActuales.length >= 2) {
+          alert("Solo se pueden seleccionar 2 secciones para mantener la estética de la imagen.");
+          return;
+        }
         section.querySelectorAll("button").forEach(btn => btn.classList.add("selected"));
       };
 
@@ -87,7 +94,28 @@
         const btn = document.createElement("button");
         btn.textContent = `${h}`;
         btn.setAttribute("data-full", `${cancha} - ${h}`);
-        btn.onclick = () => btn.classList.toggle("selected");
+        btn.onclick = () => {
+          btn.classList.toggle("selected");
+
+          const seleccionados = Array.from(document.querySelectorAll("#horarios button.selected"))
+            .map(b => b.getAttribute("data-full"));
+          const categoriasActuales = [...new Set(seleccionados.map(txt => txt.split(' - ')[0]))];
+
+          if (categoriasActuales.length <= 2 || categoriasActuales.includes(cancha)) return;
+
+          // Eliminar la segunda categoría
+          const categoriaAEliminar = categoriasActuales[1];
+          document.querySelectorAll(`#horarios button.selected`).forEach(b => {
+            if (b.getAttribute("data-full").startsWith(categoriaAEliminar)) {
+              b.classList.remove("selected");
+            }
+          });
+
+          // Reforzar selección actual
+          btn.classList.add("selected");
+
+          alert("Solo se pueden seleccionar 2 secciones para mantener la estética de la imagen. Se reemplazó la segunda selección.");
+        };
         grid.appendChild(btn);
       });
 
@@ -194,13 +222,14 @@
     }
   </script>
 
-      <footer style="background:#f9f9f9;border-top:1px solid #ddd;padding:20px 10px;display:flex;justify-content:center;align-items:center;gap:15px;font-family:sans-serif;flex-direction:column;">
-  <div style="display:flex;align-items:center;gap:10px;">
-    <img src="https://media.licdn.com/dms/image/v2/D4D03AQHpPmZG1XlYNw/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1728684808277?e=2147483647&v=beta&t=rZW8tcqm_JxCfceZur_cxUXU_znBVj6YPh7COW32_V8" 
-         alt="Prograsan logo" 
-         style="width:40px;height:40px;border-radius:50%;object-fit:cover;">
-    <span style="font-size:16px;color:#333;">Aplicación desarrollada por <strong style="color:#083560;"><a href="https://www.instagram.com/prograsan/">Prograsan</a></strong></span>
-  </div>
-</footer>
+  <footer style="background:#f9f9f9;border-top:1px solid #ddd;padding:20px 10px;display:flex;justify-content:center;align-items:center;gap:15px;font-family:sans-serif;flex-direction:column;">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <img src="https://media.licdn.com/dms/image/v2/D4D03AQHpPmZG1XlYNw/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1728684808277?e=2147483647&v=beta&t=rZW8tcqm_JxCfceZur_cxUXU_znBVj6YPh7COW32_V8" 
+           alt="Prograsan logo" 
+           style="width:40px;height:40px;border-radius:50%;object-fit:cover;">
+      <span style="font-size:16px;color:#333;">Aplicación desarrollada por <strong style="color:#083560;"><a href="https://www.instagram.com/prograsan/">Prograsan</a></strong></span>
+    </div>
+  </footer>
+
 </body>
 </html>
