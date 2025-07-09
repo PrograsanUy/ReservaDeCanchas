@@ -253,20 +253,20 @@
     categorias.forEach(cat => {
       html += `<div style="width:370px;display:flex;flex-direction:column;align-items:center;">
   <div style="font-size:40px;background:white;color:#083560;
-              box-shadow:4px 4px 12px rgba(0,0,0,0.5);
+              box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1), 4px 4px 12px rgba(0, 0, 0, 0.5);
               font-weight:bold;height:70px;width:100%;
               display:flex;justify-content:center;align-items:center;
               border-radius:5px;margin-bottom:20px;
-              position:relative; z-index:2;">${cat}</div>`;
+              ">${cat}</div>`;
 
       seleccionados.filter(txt => txt.startsWith(cat)).forEach(txt => {
         const hora = txt.split(' - ')[1];
 html += `<div style="height:75px;width:100%;background:#083560;
-               box-shadow:4px 4px 12px rgba(0,0,0,0.5);
+               box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1), 4px 4px 12px rgba(0, 0, 0, 0.5);
                color:white;font-size:40px;font-weight:300;
                display:flex;justify-content:center;align-items:center;
                border-radius:10px;margin-bottom:25px;
-               position:relative; z-index:2;">${hora}</div>`;
+               ">${hora}</div>`;
 
       });
       html += `</div>`;
@@ -288,7 +288,9 @@ html += `<div style="height:75px;width:100%;background:#083560;
       useCORS: true,
       width: 1080,
       height: 1920,
-      scale: 2
+      scale: 2,
+      backgroundColor: null,       // Para mantener transparencia si aplica
+      allowTaint: true             // Para permitir render de todo incluso sin CORS
     }).then(canvas => {
       canvas.toBlob(blob => {
         const url = URL.createObjectURL(blob);
