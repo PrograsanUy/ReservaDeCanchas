@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" href="donBalonLogo.ico" type="image/x-icon">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Galería de Fondos - ProCanch</title>
+  <link rel="stylesheet" type="text/css" href="estilosGenerales.css">
+  <script src="https://kit.fontawesome.com/f3120e81c2.js" crossorigin="anonymous"></script>
+  <style>
+
+    h1 {
+      text-align: center;
+      font-size: 15px;
+      margin: 0px auto 20px auto;
+      color: #083560;
+      max-width: 90%;
+    }
+
+    #galeriaWrapper {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px 60px;
+    }
+
+    #gridGaleria {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 20px;
+      justify-items: center;
+    }
+
+    #gridGaleria img {
+      width: 100%;
+      border-radius: 4px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      cursor: pointer;
+      transition: transform 0.1s ease, box-shadow 0.3s ease;
+    }
+
+    #gridGaleria img:hover {
+      transform: scale(1.05);
+      box-shadow: 0 5px 20px rgba(0,0,0,0.25);
+    }
+
+    #modalGaleria {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8);
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      flex-direction: column;
+    }
+
+    #modalGaleria img {
+      max-width: 90%;
+      max-height: 85vh;
+      border-radius: 12px;
+      box-shadow: 0 0 25px #000;
+    }
+
+    #cerrarModal, #descargarModal {
+      position: absolute;
+      top: 20px;
+      background: #fff;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #cerrarModal {
+      right: 20px;
+    }
+
+    #descargarModal {
+      right: 70px;
+      text-decoration: none;
+      color: #083560;
+      font-size: 22px;
+    }
+
+    footer {
+      background:#f9f9f9;
+      padding:20px 10px;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      gap:15px;
+      font-family:sans-serif;
+      flex-direction:column;
+    }
+
+    footer img {
+      width:40px;
+      height:40px;
+      border-radius:50%;
+      object-fit:cover;
+    }
+
+    footer a {
+      color: #083560;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="contenedorOpcionesApp">
+    <div id="tituloApp">
+      <h3>ProCanch - Don Balón</h3>
+    </div>
+
+    <div id="opcionesApp">
+      <ul>
+        <a href="index.html"><li>Horarios</li></a>
+        <a href="rivalCancha.html"><li>Rival</li></a>
+        <a href="estadoDelDia.html"><li>Estado</li></a>
+        <a href="galeriaFondos.html"><li class="opcionActiva"><i class="fa-solid fa-image"></i></li></a>
+      </ul>
+    </div>
+  </div>
+
+  <div id="galeriaWrapper">
+    <h1>Galería de Fondos</h1>
+    <div id="gridGaleria"></div>
+  </div>
+
+  <div id="modalGaleria">
+    <button id="cerrarModal">×</button>
+    <a id="descargarModal" href="#" download title="Descargar Imagen">⬇️</a>
+    <img src="" alt="Vista previa" id="imgModal" />
+  </div>
+
+  <footer>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <img src="https://media.licdn.com/dms/image/v2/D4D03AQHpPmZG1XlYNw/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1728684808277?e=2147483647&v=beta&t=rZW8tcqm_JxCfceZur_cxUXU_znBVj6YPh7COW32_V8" 
+           alt="Prograsan logo">
+      <span style="font-size:16px;color:#333;">Aplicación desarrollada por <strong><a href="https://www.instagram.com/prograsan/" target="_blank">Prograsan</a></strong></span>
+    </div>
+  </footer>
+
+  <script>
+    const fondos = [];
+    for (let i = 1; i <= 27; i++) {
+      fondos.push(`fondos/f${i}.jpg`);
+    }
+
+    const gridGaleria = document.getElementById('gridGaleria');
+    const modalGaleria = document.getElementById('modalGaleria');
+    const imgModal = document.getElementById('imgModal');
+    const cerrarModal = document.getElementById('cerrarModal');
+    const descargarModal = document.getElementById('descargarModal');
+
+    function cargarGaleria() {
+      fondos.forEach(fondo => {
+        const img = document.createElement('img');
+        img.src = fondo;
+        img.alt = "Fondo";
+        img.loading = "lazy";
+
+        img.addEventListener('click', () => {
+          imgModal.src = fondo;
+          descargarModal.href = fondo;
+          descargarModal.download = fondo.split('/').pop();
+          modalGaleria.style.display = 'flex';
+        });
+
+        gridGaleria.appendChild(img);
+      });
+    }
+
+    cerrarModal.addEventListener('click', () => {
+      modalGaleria.style.display = 'none';
+      imgModal.src = '';
+    });
+
+    modalGaleria.addEventListener('click', (e) => {
+      if (e.target === modalGaleria) {
+        modalGaleria.style.display = 'none';
+        imgModal.src = '';
+      }
+    });
+
+    cargarGaleria();
+  </script>
+
+</body>
+</html>
