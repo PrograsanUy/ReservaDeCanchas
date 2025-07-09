@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
@@ -7,6 +7,38 @@
   <title>ProCanch - DonBalon</title>
   <link rel="stylesheet" type="text/css" href="estilosGenerales.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    /* Para botones eliminar horarios */
+    .btn-eliminar {
+      border: none;
+      color: red;
+      border-radius: 50%;
+      height: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      padding-left: 30px;
+      line-height: 0px;
+      right: -35px;
+      font-size: 14px;
+      position: absolute;
+    }
+
+    .btn-agregar {
+      margin-left: 10px;
+      cursor: pointer;
+      padding: 4px 8px;
+      font-size: 14px;
+      border-radius: 4px;
+      border: 1px solid #083560;
+      background: #083560;
+      color: white;
+      font-weight: bold;
+    }
+    /* Para que los botones de horario tengan posición relativa y así el eliminar quede bien posicionado */
+    .horarios-grid button {
+      position: relative;
+    }
+  </style>
 </head>
 <body>
 
@@ -35,15 +67,23 @@
     <div id="previewContainer"></div>
   </div>
 
-  <script>
-    const horariosPorCancha = {
-      'FÚTBOL 5': ["16:00 ", "17:00 ", "18:00 ", "19:00 ", "20:00 ", "21:00 ", "22:00 ", "23:00 "],
-      'FÚTBOL 6 O 7': ["16:00 ", "17:00 ", "18:00 ", "19:00 ", "20:00 ", "21:00 ", "22:00 ", "23:00 "],
-      'PÁDEL HORA': ["17 a 18 ", "18 a 19 ", "19 a 20 ", "20 a 21 ", "21 a 22 ", "22 a 23 "],
-      'PÁDEL 1.30 H': ["17.30 a 19 ", "18 a 19.30 ", "19 a 20.30 ", "19.30 a 21 ", "20.30 a 22.00 ", "21 a 22.30 "]
-    };
+<script>
+  // Carga horarios desde localStorage o usa los iniciales
+  let horariosPorCancha = JSON.parse(localStorage.getItem('horariosPorCancha')) || {
+    'FÚTBOL 5': ["16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"],
+    'FÚTBOL 6 O 7': ["16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"],
+    'PÁDEL HORA': ["17 a 18", "18 a 19", "19 a 20", "20 a 21", "21 a 22", "22 a 23"],
+    'PÁDEL 1.30 H': ["17.30 a 19", "18 a 19.30", "19 a 20.30", "19.30 a 21", "20.30 a 22.00", "21 a 22.30"]
+  };
 
-    const horariosDiv = document.getElementById("horarios");
+  const horariosDiv = document.getElementById("horarios");
+
+  function guardarHorarios() {
+    localStorage.setItem('horariosPorCancha', JSON.stringify(horariosPorCancha));
+  }
+
+  function renderHorarios() {
+    horariosDiv.innerHTML = '';
 
     Object.entries(horariosPorCancha).forEach(([cancha, horarios]) => {
       const section = document.createElement("div");
@@ -56,6 +96,7 @@
       title.textContent = cancha;
       titleDiv.appendChild(title);
 
+      // Botones Seleccionar y Eliminar seleccionados
       const actionsDiv = document.createElement("div");
       actionsDiv.style.display = "flex";
       actionsDiv.style.gap = "8px";
@@ -63,6 +104,7 @@
       const selectAll = document.createElement("span");
       selectAll.textContent = "✅ Seleccionar";
       selectAll.className = "select-all";
+      selectAll.style.cursor = "pointer";
       selectAll.onclick = () => {
         const seleccionados = Array.from(document.querySelectorAll("#horarios button.selected"))
           .map(b => b.getAttribute("data-full"));
@@ -72,18 +114,39 @@
           alert("Solo se pueden seleccionar 2 secciones para mantener la estética de la imagen.");
           return;
         }
-        section.querySelectorAll("button").forEach(btn => btn.classList.add("selected"));
+        // SOLO botones con data-full para evitar seleccionar botones eliminar
+        section.querySelectorAll("button[data-full]").forEach(btn => btn.classList.add("selected"));
       };
 
       const clearAll = document.createElement("span");
       clearAll.textContent = "❌ Eliminar";
       clearAll.className = "select-all";
+      clearAll.style.cursor = "pointer";
       clearAll.onclick = () => {
-        section.querySelectorAll("button").forEach(btn => btn.classList.remove("selected"));
+        // SOLO botones con data-full para evitar quitar la clase de botones eliminar
+        section.querySelectorAll("button[data-full]").forEach(btn => btn.classList.remove("selected"));
+      };
+
+      // Botón para agregar horarios
+      const btnAgregar = document.createElement("button");
+      btnAgregar.textContent = "+";
+      btnAgregar.className = "btn-agregar";
+      btnAgregar.onclick = () => {
+        const nuevaHora = prompt(`Ingresa nuevo horario para ${cancha}:`);
+        if (nuevaHora) {
+          if (horariosPorCancha[cancha].includes(nuevaHora.trim())) {
+            alert("Ese horario ya existe en esta sección.");
+            return;
+          }
+          horariosPorCancha[cancha].push(nuevaHora.trim());
+          guardarHorarios();
+          renderHorarios();
+        }
       };
 
       actionsDiv.appendChild(selectAll);
       actionsDiv.appendChild(clearAll);
+      actionsDiv.appendChild(btnAgregar);
       titleDiv.appendChild(actionsDiv);
       section.appendChild(titleDiv);
 
@@ -94,6 +157,7 @@
         const btn = document.createElement("button");
         btn.textContent = `${h}`;
         btn.setAttribute("data-full", `${cancha} - ${h}`);
+
         btn.onclick = () => {
           btn.classList.toggle("selected");
 
@@ -116,120 +180,139 @@
 
           alert("Solo se pueden seleccionar 2 secciones para mantener la estética de la imagen. Se reemplazó la segunda selección.");
         };
+
+        // Botón eliminar horario individual
+        const btnEliminarHora = document.createElement("button");
+        btnEliminarHora.textContent = "×";
+        btnEliminarHora.className = "btn-eliminar";
+        btnEliminarHora.onclick = (e) => {
+          e.stopPropagation(); // Evita toggle selected
+          if (confirm(`¿Eliminar el horario "${h}" de ${cancha}?`)) {
+            horariosPorCancha[cancha] = horariosPorCancha[cancha].filter(hora => hora !== h);
+            guardarHorarios();
+            renderHorarios();
+          }
+        };
+
+        btn.appendChild(btnEliminarHora);
+
         grid.appendChild(btn);
       });
 
       section.appendChild(grid);
       horariosDiv.appendChild(section);
     });
+  }
 
-    function getRandomBackground() {
-      const fondos = ["fondos/f1.jpg", "fondos/f2.jpg", "fondos/f3.jpg", "fondos/f4.jpg", "fondos/f5.jpg"];
-      return fondos[Math.floor(Math.random() * fondos.length)];
+  renderHorarios();
+
+  function getRandomBackground() {
+    const fondos = ["fondos/f1.jpg", "fondos/f2.jpg", "fondos/f3.jpg", "fondos/f4.jpg", "fondos/f5.jpg"];
+    return fondos[Math.floor(Math.random() * fondos.length)];
+  }
+
+  function generarImagen() {
+    const boton = document.getElementById('generar');
+    boton.disabled = true;
+    boton.textContent = 'Generando...';
+
+    const seleccionados = Array.from(document.querySelectorAll("#horarios button.selected"))
+      .map(b => b.getAttribute("data-full"));
+    const categorias = [...new Set(seleccionados.map(txt => txt.split(' - ')[0]))];
+
+    if (categorias.length === 0) {
+      alert("Debes seleccionar al menos una categoría con horarios.");
+      boton.disabled = false;
+      boton.textContent = 'Generar Imagen';
+      return;
     }
 
-    function generarImagen() {
-      const boton = document.getElementById('generar');
-      boton.disabled = true;
-      boton.textContent = 'Generando...';
-
-      const seleccionados = Array.from(document.querySelectorAll("#horarios button.selected"))
-        .map(b => b.getAttribute("data-full"));
-      const categorias = [...new Set(seleccionados.map(txt => txt.split(' - ')[0]))];
-
-      if (categorias.length === 0) {
-        alert("Debes seleccionar al menos una categoría con horarios.");
-        boton.disabled = false;
-        boton.textContent = 'Generar Imagen';
-        return;
-      }
-
-      if (categorias.length > 2) {
-        alert("Solo puedes seleccionar horarios de hasta 2 canchas distintas.");
-        boton.disabled = false;
-        boton.textContent = 'Generar Imagen';
-        return;
-      }
-
-      const fechaInput = document.getElementById('fecha').value;
-      const fecha = fechaInput ? new Date(fechaInput) : new Date();
-      const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
-      const dia = fecha.getDate().toString().padStart(2, '0');
-      const fechaFormateada = `${mes}.${dia}`;
-
-      let html = `<div style="position:relative;width:1080px;height:1920px;font-family:sans-serif;">
-        <div style="position:absolute;width:100%;height:100%;background-image:url('${getRandomBackground()}');background-size:cover;background-position:center; z-index: 0;"></div>
-        <div style="background-color:rgba(0,0,0,0.6);position:absolute;width:100%;height:100%;top:0;left:0; z-index: 1;"></div>
-        <img src="donBalonLogo.png" style="position:absolute;top:80px;right:80px;width:100px; z-index: 2;">
-        <div style="position:absolute;top:300px;width:100%;text-align:center;color:white; z-index: 2;text-shadow:2px 2px 5px rgba(0,0,0,0.7);">
-          <div style="font-size:125px;font-weight:bold;">TURNOS</div>
-          <div style="font-size:50px;margin-top:15px;">DISPONIBLES HOY</div>
-          <div style="font-size:46px;margin-top:25px;">${fechaFormateada}</div>
-        </div>
-        <div style="position:absolute;top:700px;left:50%;transform:translateX(-50%);display:flex;gap:50px; z-index: 2;">`;
-
-      categorias.forEach(cat => {
-        html += `<div style="width:370px;display:flex;flex-direction:column;align-items:center;">
-          <div style="font-size:40px;background:white;color:#083560;font-weight:bold;height:70px;width:100%;display:flex;justify-content:center;align-items:center;border-radius:5px;margin-bottom:20px;">${cat}</div>`;
-        seleccionados.filter(txt => txt.startsWith(cat)).forEach(txt => {
-          const hora = txt.split(' - ')[1];
-          html += `<div style="height:75px;width:100%;background:#083560;color:white;font-size:40px;font-weight:300;display:flex;justify-content:center;align-items:center;border-radius:10px;margin-bottom:25px;">${hora}</div>`;
-        });
-        html += `</div>`;
-      });
-
-      html += `
-        </div>
-        <div style="position:absolute;bottom:160px;width:100%;text-align:center;z-index:2;text-shadow:2px 2px 5px rgba(0,0,0,0.7);">
-          <div style="font-size:55px;font-weight:bold;color:white;">091 061 822</div>
-          <div style="font-size:30px;color:white;margin-top:10px;">Don Balón</div>
-        </div>
-      </div>`;
-
-      const imagenContainer = document.getElementById('imagenContainer');
-      imagenContainer.innerHTML = html;
-      imagenContainer.style.display = "block";
-
-      html2canvas(imagenContainer.firstChild, {
-        useCORS: true,
-        width: 1080,
-        height: 1920,
-        scale: 2
-      }).then(canvas => {
-        canvas.toBlob(blob => {
-          const url = URL.createObjectURL(blob);
-          const link = document.createElement('a');
-          link.href = url;
-          link.download = 'horarios.png';
-          link.click();
-
-          const previewContainer = document.getElementById('previewContainer');
-          previewContainer.innerHTML = '';
-          previewContainer.style.display = 'flex';
-          previewContainer.style.justifyContent = 'center';
-
-          const img = new Image();
-          img.src = url;
-          img.style.width = '270px';
-          img.style.height = '480px';
-          img.alt = 'Preview';
-          previewContainer.appendChild(img);
-
-          boton.disabled = false;
-          boton.textContent = 'Generar Imagen';
-        });
-      });
+    if (categorias.length > 2) {
+      alert("Solo puedes seleccionar horarios de hasta 2 canchas distintas.");
+      boton.disabled = false;
+      boton.textContent = 'Generar Imagen';
+      return;
     }
-  </script>
 
-  <footer style="background:#f9f9f9;border-top:1px solid #ddd;padding:20px 10px;display:flex;justify-content:center;align-items:center;gap:15px;font-family:sans-serif;flex-direction:column;">
-    <div style="display:flex;align-items:center;gap:10px;">
-      <img src="https://media.licdn.com/dms/image/v2/D4D03AQHpPmZG1XlYNw/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1728684808277?e=2147483647&v=beta&t=rZW8tcqm_JxCfceZur_cxUXU_znBVj6YPh7COW32_V8" 
-           alt="Prograsan logo" 
-           style="width:40px;height:40px;border-radius:50%;object-fit:cover;">
-      <span style="font-size:16px;color:#333;">Aplicación desarrollada por <strong style="color:#083560;"><a href="https://www.instagram.com/prograsan/">Prograsan</a></strong></span>
-    </div>
-  </footer>
+    const fechaInput = document.getElementById('fecha').value;
+    const fecha = fechaInput ? new Date(fechaInput) : new Date();
+    const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
+    const dia = fecha.getDate().toString().padStart(2, '0');
+    const fechaFormateada = `${mes}.${dia}`;
+
+    let html = `<div style="position:relative;width:1080px;height:1920px;font-family:sans-serif;">
+      <div style="position:absolute;width:100%;height:100%;background-image:url('${getRandomBackground()}');background-size:cover;background-position:center; z-index: 0;"></div>
+      <div style="background-color:rgba(0,0,0,0.6);position:absolute;width:100%;height:100%;top:0;left:0; z-index: 1;"></div>
+      <img src="donBalonLogo.png" style="position:absolute;top:80px;right:80px;width:100px; z-index: 2;">
+      <div style="position:absolute;top:300px;width:100%;text-align:center;color:white; z-index: 2;text-shadow:2px 2px 5px rgba(0,0,0,0.7);">
+        <div style="font-size:125px;font-weight:bold;">TURNOS</div>
+        <div style="font-size:50px;margin-top:15px;">DISPONIBLES HOY</div>
+        <div style="font-size:46px;margin-top:25px;">${fechaFormateada}</div>
+      </div>
+      <div style="position:absolute;top:700px;left:50%;transform:translateX(-50%);display:flex;gap:50px; z-index: 2;">`;
+
+    categorias.forEach(cat => {
+      html += `<div style="width:370px;display:flex;flex-direction:column;align-items:center;">
+        <div style="font-size:40px;background:white;color:#083560;font-weight:bold;height:70px;width:100%;display:flex;justify-content:center;align-items:center;border-radius:5px;margin-bottom:20px;">${cat}</div>`;
+      seleccionados.filter(txt => txt.startsWith(cat)).forEach(txt => {
+        const hora = txt.split(' - ')[1];
+        html += `<div style="height:75px;width:100%;background:#083560;color:white;font-size:40px;font-weight:300;display:flex;justify-content:center;align-items:center;border-radius:10px;margin-bottom:25px;">${hora}</div>`;
+      });
+      html += `</div>`;
+    });
+
+    html += `
+      </div>
+      <div style="position:absolute;bottom:160px;width:100%;text-align:center;z-index:2;text-shadow:2px 2px 5px rgba(0,0,0,0.7);">
+        <div style="font-size:55px;font-weight:bold;color:white;">091 061 822</div>
+        <div style="font-size:30px;color:white;margin-top:10px;">Don Balón</div>
+      </div>
+    </div>`;
+
+    const imagenContainer = document.getElementById('imagenContainer');
+    imagenContainer.innerHTML = html;
+    imagenContainer.style.display = "block";
+
+    html2canvas(imagenContainer.firstChild, {
+      useCORS: true,
+      width: 1080,
+      height: 1920,
+      scale: 2
+    }).then(canvas => {
+      canvas.toBlob(blob => {
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'horarios.png';
+        link.click();
+
+        const previewContainer = document.getElementById('previewContainer');
+        previewContainer.innerHTML = '';
+        previewContainer.style.display = 'flex';
+        previewContainer.style.justifyContent = 'center';
+
+        const img = new Image();
+        img.src = url;
+        img.style.width = '270px';
+        img.style.height = '480px';
+        img.alt = 'Preview';
+        previewContainer.appendChild(img);
+
+        boton.disabled = false;
+        boton.textContent = 'Generar Imagen';
+      });
+    });
+  }
+</script>
+
+<footer style="background:#f9f9f9;border-top:1px solid #ddd;padding:20px 10px;display:flex;justify-content:center;align-items:center;gap:15px;font-family:sans-serif;flex-direction:column;">
+  <div style="display:flex;align-items:center;gap:10px;">
+    <img src="https://media.licdn.com/dms/image/v2/D4D03AQHpPmZG1XlYNw/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1728684808277?e=2147483647&v=beta&t=rZW8tcqm_JxCfceZur_cxUXU_znBVj6YPh7COW32_V8" 
+         alt="Prograsan logo" 
+         style="width:40px;height:40px;border-radius:50%;object-fit:cover;">
+    <span style="font-size:16px;color:#333;">Aplicación desarrollada por <strong style="color:#083560;"><a href="https://www.instagram.com/prograsan/">Prograsan</a></strong></span>
+  </div>
+</footer>
 
 </body>
 </html>
