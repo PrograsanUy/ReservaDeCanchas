@@ -152,10 +152,10 @@
 
       categorias.forEach(cat => {
         html += `<div style="width:470px;display:flex;flex-direction:column;align-items:center;">
-          <div style="box-shadow:2px 2px 5px rgba(0,0,0,0.2); margin-top:80px; font-size:60px;background:white;color:#083560;font-weight:bold;height:120px;width:100%;display:flex;justify-content:center;align-items:center;border-radius:5px;margin-bottom:20px;">${cat}</div>`;
+          <div style="box-shadow:2px 2px 5px rgba(0,0,0,0.2); margin-top:80px; box-shadow:2px 2px 5px rgba(0,0,0,0.3); font-size:60px;background:white;color:#083560;font-weight:bold;height:120px;width:100%;display:flex;justify-content:center;align-items:center;border-radius:5px;margin-bottom:20px;">${cat}</div>`;
         seleccionados.filter(txt => txt.startsWith(cat)).forEach(txt => {
           const hora = txt.split(' - ')[1];
-          html += `<div style="box-shadow:2px 2px 5px rgba(0,0,0,0.2); height:120px;width:100%;background:#083560;color:white;font-size:60px;font-weight:300;display:flex;justify-content:center;align-items:center;border-radius:10px;margin-bottom:25px;">${hora}</div>`;
+          html += `<div style="box-shadow:2px 2px 5px rgba(0,0,0,0.2); box-shadow:2px 2px 5px rgba(0,0,0,0.3); height:120px;width:100%;background:#083560;color:white;font-size:60px;font-weight:300;display:flex;justify-content:center;align-items:center;border-radius:10px;margin-bottom:25px;">${hora}</div>`;
         });
         html += `</div>`;
       });
