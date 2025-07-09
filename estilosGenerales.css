@@ -73,7 +73,7 @@ button#generar {
   background: #2563eb;
   color: white;
   font-weight: bold;
-  margin-bottom: 20px;
+  margin-bottom: 0px;
   padding: 12px 24px;
   border: none;
   border-radius: 5px;
@@ -92,7 +92,7 @@ button#generar {
 #previewContainer img {
   width: 270px;
   height: 480px;
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
 
