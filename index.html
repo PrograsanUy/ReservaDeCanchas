@@ -206,7 +206,7 @@
   renderHorarios();
 
   function getRandomBackground() {
-    const fondos = ["fondos/f1.jpg", "fondos/f2.jpg", "fondos/f3.jpg", "fondos/f4.jpg", "fondos/f5.jpg"];
+    const fondos = Array.from({ length: 27 }, (_, i) => `fondos/f${i + 1}.jpg`);
     return fondos[Math.floor(Math.random() * fondos.length)];
   }
 
