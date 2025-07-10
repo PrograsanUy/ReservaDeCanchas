@@ -56,14 +56,13 @@
 
 <div style="display: flex; justify-content: center; gap: 15px; align-items: center; margin-bottom: 20px;">
   <inputa id="fecha" type="date" />
-  <button id="generar" onclick="generarImagen()">Generar Imagen</button>
   <button onclick="restablecerHorariosDeFabrica()" style="background:#dc2626;color:white;padding:6px 10px;border:none;border-radius:6px;cursor:pointer;">
     Restablecer horarios
   </button>
 </div>
 
 <div id="horarios"></div>
-
+<button id="generar" onclick="generarImagen()">Generar Imagen</button>
 <div style="width: 100%; overflow: auto;">
   <div id="imagenContainer" style="display:none;"></div>
   <div id="previewContainer"></div>
