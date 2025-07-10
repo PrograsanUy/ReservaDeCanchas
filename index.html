@@ -33,6 +33,19 @@
     .horarios-grid button {
       position: relative;
     }
+    #previewContainer canvas {
+      width: 270px;
+      height: 480px;
+      border-radius: 10px;
+      margin-top: 15px;
+    }
+    #previewLeyenda {
+      font-size: 13px;
+      color: gray;
+      margin-top: 10px;
+      text-align: center;
+      font-family: sans-serif;
+    }
   </style>
 </head>
 <body>
@@ -41,7 +54,6 @@
   <div id="tituloApp">
     <h3>ProCanch - Don Balón</h3>
   </div>
-
   <div id="opcionesApp">
     <ul>
       <a href="index.html"><li class="opcionActiva">Horarios</li></a>
@@ -55,19 +67,28 @@
 <h1 style="text-align:center; font-size:12px; margin-bottom:20px; color: grey;">Genera una imagen con los horarios disponibles</h1>
 
 <div style="display: flex; justify-content: center; gap: 15px; align-items: center; margin-bottom: 20px;">
-  <inputa id="fecha" type="date" />
+  <input id="fecha" type="date" />
   <button onclick="restablecerHorariosDeFabrica()" style="background:#dc2626;color:white;padding:6px 10px;border:none;border-radius:6px;cursor:pointer;">
     Restablecer horarios
   </button>
 </div>
 
 <div id="horarios"></div>
-<button id="generar" onclick="generarImagen()">Generar Imagen</button>
-<div style="width: 100%; overflow: auto;">
-  <div id="imagenContainer" style="display:none;"></div>
-  <div id="previewContainer"></div>
+
+<!-- NUEVOS BOTONES -->
+<div style="text-align:center; margin: 25px 0;">
+  <button id="generar" onclick="generarImagen()" style="margin-right:10px;background:#083560;color:white;padding:6px 12px;border:none;border-radius:6px;cursor:pointer;">Ver Preview</button>
+  <button id="descargar" onclick="descargarImagen()" style="background:#10b981;color:white;padding:6px 12px;border:none;border-radius:6px;cursor:pointer;display:none;">Descargar Imagen</button>
 </div>
 
+<!-- CONTENEDOR DE IMAGEN Y LEYENDA -->
+<div style="width: 100%; overflow: auto;">
+  <div id="imagenContainer" style="display:none;"></div>
+  <div id="previewContainer" style="display:flex; justify-content:center;"></div>
+  <div id="previewLeyenda"></div>
+</div>
+
+<!-- TU SCRIPT CON FUNCIONES COMPLETAS -->
 <script>
 const HORARIOS_VERSION = 2;
 const versionGuardada = localStorage.getItem('horariosVersion');
@@ -81,33 +102,21 @@ let horariosPorCancha = JSON.parse(localStorage.getItem('horariosPorCancha')) ||
   'FÚTBOL 5': ["16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"],
   'FÚTBOL 6 O 7': ["16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"],
   'PÁDEL HORA': ["17:00 a 18:00", "18:00 a 19:00", "19:00 a 20:00", "20:00 a 21:00", "21:00 a 22:00", "22:00 a 23:00"],
-  'PÁDEL 1.30 H': [
-    "17:30 a 19:00", "18:00 a 19:30", "19:00 a 20:30",
-    "19:30 a 21:00", "20:30 a 22:00", "21:00 a 22:30", "22:00 a 23:30"
-  ]
+  'PÁDEL 1.30 H': ["17:30 a 19:00", "18:00 a 19:30", "19:00 a 20:30", "19:30 a 21:00", "20:30 a 22:00", "21:00 a 22:30", "22:00 a 23:30"]
 };
-
-const horariosDiv = document.getElementById("horarios");
 
 function guardarHorarios() {
   localStorage.setItem('horariosPorCancha', JSON.stringify(horariosPorCancha));
 }
 
 function restablecerHorariosDeFabrica() {
-  const confirmacion = confirm("¿Estás seguro que querés restablecer todos los horarios a los valores predeterminados?");
-  if (!confirmacion) return;
-
-  const horariosDeFabrica = {
+  if (!confirm("¿Estás seguro que querés restablecer todos los horarios a los valores predeterminados?")) return;
+  horariosPorCancha = {
     'FÚTBOL 5': ["16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"],
     'FÚTBOL 6 O 7': ["16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"],
     'PÁDEL HORA': ["17:00 a 18:00", "18:00 a 19:00", "19:00 a 20:00", "20:00 a 21:00", "21:00 a 22:00", "22:00 a 23:00"],
-    'PÁDEL 1.30 H': [
-      "17:30 a 19:00", "18:00 a 19:30", "19:00 a 20:30",
-      "19:30 a 21:00", "20:30 a 22:00", "21:00 a 22:30", "22:00 a 23:30"
-    ]
+    'PÁDEL 1.30 H': ["17:30 a 19:00", "18:00 a 19:30", "19:00 a 20:30", "19:30 a 21:00", "20:30 a 22:00", "21:00 a 22:30", "22:00 a 23:30"]
   };
-
-  horariosPorCancha = horariosDeFabrica;
   localStorage.setItem('horariosPorCancha', JSON.stringify(horariosPorCancha));
   localStorage.setItem('horariosVersion', HORARIOS_VERSION);
   renderHorarios();
@@ -115,6 +124,7 @@ function restablecerHorariosDeFabrica() {
 }
 
 function renderHorarios() {
+  const horariosDiv = document.getElementById("horarios");
   horariosDiv.innerHTML = '';
   Object.entries(horariosPorCancha).forEach(([cancha, horarios]) => {
     const section = document.createElement("div");
@@ -134,8 +144,7 @@ function renderHorarios() {
     selectAll.className = "select-all";
     selectAll.style.cursor = "pointer";
     selectAll.onclick = () => {
-      const seleccionados = Array.from(document.querySelectorAll("#horarios button.selected"))
-        .map(b => b.getAttribute("data-full"));
+      const seleccionados = Array.from(document.querySelectorAll("#horarios button.selected")).map(b => b.getAttribute("data-full"));
       const categoriasActuales = [...new Set(seleccionados.map(txt => txt.split(' - ')[0]))];
       if (!categoriasActuales.includes(cancha) && categoriasActuales.length >= 2) {
         alert("Solo se pueden seleccionar 2 secciones para mantener la estética de la imagen.");
@@ -148,9 +157,7 @@ function renderHorarios() {
     clearAll.textContent = "❌ Eliminar";
     clearAll.className = "select-all";
     clearAll.style.cursor = "pointer";
-    clearAll.onclick = () => {
-      section.querySelectorAll("button[data-full]").forEach(btn => btn.classList.remove("selected"));
-    };
+    clearAll.onclick = () => section.querySelectorAll("button[data-full]").forEach(btn => btn.classList.remove("selected"));
 
     const btnAgregar = document.createElement("button");
     btnAgregar.textContent = "+";
@@ -168,39 +175,35 @@ function renderHorarios() {
       }
     };
 
-    actionsDiv.appendChild(selectAll);
-    actionsDiv.appendChild(clearAll);
-    actionsDiv.appendChild(btnAgregar);
+    actionsDiv.append(selectAll, clearAll, btnAgregar);
     titleDiv.appendChild(actionsDiv);
     section.appendChild(titleDiv);
 
     const grid = document.createElement("div");
     grid.className = "horarios-grid";
-
     horarios.forEach(h => {
       const btn = document.createElement("button");
-      btn.textContent = `${h}`;
+      btn.textContent = h;
       btn.setAttribute("data-full", `${cancha} - ${h}`);
       btn.onclick = () => {
         btn.classList.toggle("selected");
-        const seleccionados = Array.from(document.querySelectorAll("#horarios button.selected"))
-          .map(b => b.getAttribute("data-full"));
+        const seleccionados = Array.from(document.querySelectorAll("#horarios button.selected")).map(b => b.getAttribute("data-full"));
         const categoriasActuales = [...new Set(seleccionados.map(txt => txt.split(' - ')[0]))];
         if (categoriasActuales.length <= 2 || categoriasActuales.includes(cancha)) return;
         const categoriaAEliminar = categoriasActuales[1];
-        document.querySelectorAll(`#horarios button.selected`).forEach(b => {
+        document.querySelectorAll("#horarios button.selected").forEach(b => {
           if (b.getAttribute("data-full").startsWith(categoriaAEliminar)) {
             b.classList.remove("selected");
           }
         });
         btn.classList.add("selected");
-        alert("Solo se pueden seleccionar 2 secciones para mantener la estética de la imagen. Se reemplazó la segunda selección.");
+        alert("Solo se pueden seleccionar 2 secciones. Se reemplazó la segunda selección.");
       };
 
       const btnEliminarHora = document.createElement("button");
       btnEliminarHora.textContent = "×";
       btnEliminarHora.className = "btn-eliminar";
-      btnEliminarHora.onclick = (e) => {
+      btnEliminarHora.onclick = e => {
         e.stopPropagation();
         if (confirm(`¿Eliminar el horario "${h}" de ${cancha}?`)) {
           horariosPorCancha[cancha] = horariosPorCancha[cancha].filter(hora => hora !== h);
@@ -220,39 +223,27 @@ function renderHorarios() {
 
 renderHorarios();
 
-// --- FUNCIÓN PARA IMAGEN ---
 function getRandomBackground(categorias) {
   const esPadel = categorias.some(cat => cat.toUpperCase().includes("PÁDEL"));
-  if (esPadel) {
-    const fondosPadel = Array.from({ length: 14 }, (_, i) => `fondosPadel/f${i + 28}.jpg`);
-    return fondosPadel[Math.floor(Math.random() * fondosPadel.length)];
-  } else {
-    const fondos = Array.from({ length: 27 }, (_, i) => `fondos/f${i + 1}.jpg`);
-    return fondos[Math.floor(Math.random() * fondos.length)];
-  }
+  const folder = esPadel ? "fondosPadel" : "fondos";
+  const max = esPadel ? 14 : 27;
+  const start = esPadel ? 28 : 1;
+  const fondos = Array.from({ length: max }, (_, i) => `${folder}/f${i + start}.jpg`);
+  return fondos[Math.floor(Math.random() * fondos.length)];
 }
 
-// --- GENERADOR DE IMAGEN ---
 function generarImagen() {
   const boton = document.getElementById('generar');
   boton.disabled = true;
   boton.textContent = 'Generando...';
 
-  const seleccionados = Array.from(document.querySelectorAll("#horarios button.selected"))
-    .map(b => b.getAttribute("data-full"));
+  const seleccionados = Array.from(document.querySelectorAll("#horarios button.selected")).map(b => b.getAttribute("data-full"));
   const categorias = [...new Set(seleccionados.map(txt => txt.split(' - ')[0]))];
 
-  if (categorias.length === 0) {
-    alert("Debes seleccionar al menos una categoría con horarios.");
+  if (categorias.length === 0 || categorias.length > 2) {
+    alert("Debes seleccionar de 1 a 2 secciones.");
     boton.disabled = false;
-    boton.textContent = 'Generar Imagen';
-    return;
-  }
-
-  if (categorias.length > 2) {
-    alert("Solo puedes seleccionar horarios de hasta 2 canchas distintas.");
-    boton.disabled = false;
-    boton.textContent = 'Generar Imagen';
+    boton.textContent = 'Ver Preview';
     return;
   }
 
@@ -262,7 +253,7 @@ function generarImagen() {
   const dia = fecha.getDate().toString().padStart(2, '0');
   const fechaFormateada = `${dia}.${mes}`;
 
-  let html = `<div style="position:relative;width:1080px;height:1920px;font-family:sans-serif;">
+  let html = `<div id="imagenGenerada" style="position:relative;width:1080px;height:1920px;font-family:sans-serif;">
     <div style="position:absolute;width:100%;height:100%;background-image:url('${getRandomBackground(categorias)}');background-size:cover;background-position:center; z-index: 0;"></div>
     <div style="background-color:rgba(0,0,0,0.6);position:absolute;width:100%;height:100%;top:0;left:0; z-index: 1;"></div>
     <img src="donBalonLogo.png" style="position:absolute;top:80px;right:80px;width:100px; z-index: 2;">
@@ -275,21 +266,10 @@ function generarImagen() {
 
   categorias.forEach(cat => {
     html += `<div style="width:370px;display:flex;flex-direction:column;align-items:center;">
-      <div style="font-size:40px;background:white;color:#083560;
-                  box-shadow:4px 4px 12px rgba(0,0,0,0.5);
-                  font-weight:bold;height:70px;width:100%;
-                  display:flex;justify-content:center;align-items:center;
-                  border-radius:5px;margin-bottom:20px;
-                  position:relative; z-index:2;">${cat}</div>`;
-
+      <div style="font-size:40px;background:white;color:#083560;box-shadow:4px 4px 12px rgba(0,0,0,0.5);font-weight:bold;height:70px;width:100%;display:flex;justify-content:center;align-items:center;border-radius:5px;margin-bottom:20px;z-index:2;">${cat}</div>`;
     seleccionados.filter(txt => txt.startsWith(cat)).forEach(txt => {
       const hora = txt.split(' - ')[1];
-      html += `<div style="height:75px;width:100%;background:#083560;
-                   box-shadow:4px 4px 12px rgba(0,0,0,0.5);
-                   color:white;font-size:40px;font-weight:300;
-                   display:flex;justify-content:center;align-items:center;
-                   border-radius:10px;margin-bottom:25px;
-                   position:relative; z-index:2;">${hora}</div>`;
+      html += `<div style="height:75px;width:100%;background:#083560;box-shadow:4px 4px 12px rgba(0,0,0,0.5);color:white;font-size:40px;font-weight:300;display:flex;justify-content:center;align-items:center;border-radius:10px;margin-bottom:25px;z-index:2;">${hora}</div>`;
     });
     html += `</div>`;
   });
@@ -306,44 +286,45 @@ function generarImagen() {
   imagenContainer.innerHTML = html;
   imagenContainer.style.display = "block";
 
+  const previewContainer = document.getElementById('previewContainer');
+  previewContainer.innerHTML = '';
+  const leyenda = document.getElementById('previewLeyenda');
+  leyenda.textContent = '';
+
   html2canvas(imagenContainer.firstChild, {
     useCORS: true,
     width: 1080,
     height: 1920,
     scale: 2
   }).then(canvas => {
-    canvas.toBlob(blob => {
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = 'horarios.png';
-      link.click();
+    canvas.id = "canvasImagen";
+    previewContainer.appendChild(canvas);
+    document.getElementById('descargar').style.display = 'inline-block';
+    leyenda.textContent = '📲 Mantén presionada la imagen para descargarla desde tu celular';
+    boton.disabled = false;
+    boton.textContent = 'Ver Preview';
+  });
+}
 
-      const previewContainer = document.getElementById('previewContainer');
-      previewContainer.innerHTML = '';
-      previewContainer.style.display = 'flex';
-      previewContainer.style.justifyContent = 'center';
-
-      const img = new Image();
-      img.src = url;
-      img.style.width = '270px';
-      img.style.height = '480px';
-      img.alt = 'Preview';
-      previewContainer.appendChild(img);
-
-      boton.disabled = false;
-      boton.textContent = 'Generar Imagen';
-    });
+function descargarImagen() {
+  const canvas = document.getElementById('canvasImagen');
+  if (!canvas) return alert("Primero genera la imagen.");
+  canvas.toBlob(blob => {
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'horarios.png';
+    link.click();
   });
 }
 </script>
 
 <footer style="background:#f9f9f9;border-top:1px solid #ddd;padding:20px 10px;display:flex;justify-content:center;align-items:center;gap:15px;font-family:sans-serif;flex-direction:column;">
   <div style="display:flex;align-items:center;gap:10px;">
-    <img src="https://media.licdn.com/dms/image/v2/D4D03AQHpPmZG1XlYNw/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1728684808277?e=2147483647&v=beta&t=rZW8tcqm_JxCfceZur_cxUXU_znBVj6YPh7COW32_V8" 
-         alt="Prograsan logo" 
-         style="width:40px;height:40px;border-radius:50%;object-fit:cover;">
-    <span style="font-size:16px;color:#333;">Aplicación desarrollada por <strong style="color:#083560;"><a href="https://www.instagram.com/prograsan/">Prograsan</a></strong></span>
+    <img src="https://media.licdn.com/dms/image/v2/D4D03AQHpPmZG1XlYNw/profile-displayphoto-shrink_200_200/0/1728684808277?e=2147483647&v=beta&t=rZW8tcqm_JxCfceZur_cxUXU_znBVj6YPh7COW32_V8"
+         alt="Prograsan logo"
+         style="width:40px;height:40px;border-radius:10px;">
+    <span style="font-size:14px;color:#555;">Hecho con ❤️ por <strong>Prograsan</strong></span>
   </div>
 </footer>
 
