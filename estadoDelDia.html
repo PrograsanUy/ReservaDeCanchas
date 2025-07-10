@@ -99,7 +99,7 @@
       const fecha = fechaInput ? new Date(fechaInput) : new Date();
       const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
       const dia = fecha.getDate().toString().padStart(2, '0');
-      const fechaFormateada = `${mes}.${dia}`;
+      const fechaFormateada = `${dia}.${mes}`;
 
       let html = `<div style="position:relative;width:1080px;height:1920px;font-family:sans-serif;">
         <div style="position:absolute;width:100%;height:100%;background-image:url('${getRandomBackground()}');background-size:cover;background-position:center; z-index: 0;"></div>
