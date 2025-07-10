@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
@@ -54,9 +54,15 @@
 
 <h1 style="text-align:center; font-size:12px; margin-bottom:20px; color: grey;">Genera una imagen con los horarios disponibles</h1>
 
-<inputa id="fecha" type="date" />
+<div style="display: flex; justify-content: center; gap: 15px; align-items: center; margin-bottom: 20px;">
+  <inputa id="fecha" type="date" />
+  <button id="generar" onclick="generarImagen()">Generar Imagen</button>
+  <button onclick="restablecerHorariosDeFabrica()" style="background:#dc2626;color:white;padding:6px 10px;border:none;border-radius:6px;cursor:pointer;">
+    Restablecer horarios
+  </button>
+</div>
+
 <div id="horarios"></div>
-<button id="generar" onclick="generarImagen()">Generar Imagen</button>
 
 <div style="width: 100%; overflow: auto;">
   <div id="imagenContainer" style="display:none;"></div>
@@ -64,17 +70,49 @@
 </div>
 
 <script>
+const HORARIOS_VERSION = 2;
+const versionGuardada = localStorage.getItem('horariosVersion');
+
+if (versionGuardada === null || parseInt(versionGuardada) < HORARIOS_VERSION) {
+  localStorage.removeItem('horariosPorCancha');
+  localStorage.setItem('horariosVersion', HORARIOS_VERSION);
+}
+
 let horariosPorCancha = JSON.parse(localStorage.getItem('horariosPorCancha')) || {
   'FÚTBOL 5': ["16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"],
   'FÚTBOL 6 O 7': ["16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"],
   'PÁDEL HORA': ["17:00 a 18:00", "18:00 a 19:00", "19:00 a 20:00", "20:00 a 21:00", "21:00 a 22:00", "22:00 a 23:00"],
-  'PÁDEL 1.30 H': ["17:30 a 19:00", "18:00 a 19:30", "19:00 a 20:30", "19:30 a 21:00", "20:30 a 22:00", "21:00 a 22:30", "22:00 a 23:30"]
+  'PÁDEL 1.30 H': [
+    "17:30 a 19:00", "18:00 a 19:30", "19:00 a 20:30",
+    "19:30 a 21:00", "20:30 a 22:00", "21:00 a 22:30", "22:00 a 23:30"
+  ]
 };
 
 const horariosDiv = document.getElementById("horarios");
 
 function guardarHorarios() {
   localStorage.setItem('horariosPorCancha', JSON.stringify(horariosPorCancha));
+}
+
+function restablecerHorariosDeFabrica() {
+  const confirmacion = confirm("¿Estás seguro que querés restablecer todos los horarios a los valores predeterminados?");
+  if (!confirmacion) return;
+
+  const horariosDeFabrica = {
+    'FÚTBOL 5': ["16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"],
+    'FÚTBOL 6 O 7': ["16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"],
+    'PÁDEL HORA': ["17:00 a 18:00", "18:00 a 19:00", "19:00 a 20:00", "20:00 a 21:00", "21:00 a 22:00", "22:00 a 23:00"],
+    'PÁDEL 1.30 H': [
+      "17:30 a 19:00", "18:00 a 19:30", "19:00 a 20:30",
+      "19:30 a 21:00", "20:30 a 22:00", "21:00 a 22:30", "22:00 a 23:30"
+    ]
+  };
+
+  horariosPorCancha = horariosDeFabrica;
+  localStorage.setItem('horariosPorCancha', JSON.stringify(horariosPorCancha));
+  localStorage.setItem('horariosVersion', HORARIOS_VERSION);
+  renderHorarios();
+  alert("Horarios restablecidos correctamente.");
 }
 
 function renderHorarios() {
@@ -183,7 +221,7 @@ function renderHorarios() {
 
 renderHorarios();
 
-// NUEVA FUNCIÓN ACTUALIZADA
+// --- FUNCIÓN PARA IMAGEN ---
 function getRandomBackground(categorias) {
   const esPadel = categorias.some(cat => cat.toUpperCase().includes("PÁDEL"));
   if (esPadel) {
@@ -195,6 +233,7 @@ function getRandomBackground(categorias) {
   }
 }
 
+// --- GENERADOR DE IMAGEN ---
 function generarImagen() {
   const boton = document.getElementById('generar');
   boton.disabled = true;
