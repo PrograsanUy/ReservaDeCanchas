@@ -319,42 +319,17 @@ function generarImagen() {
       link.download = 'horarios.png';
       link.click();
 
-const previewContainer = document.getElementById('previewContainer');
-previewContainer.innerHTML = '';
-previewContainer.style.display = 'flex';
-previewContainer.style.flexDirection = 'column';
-previewContainer.style.alignItems = 'center';
+      const previewContainer = document.getElementById('previewContainer');
+      previewContainer.innerHTML = '';
+      previewContainer.style.display = 'flex';
+      previewContainer.style.justifyContent = 'center';
 
-const img = new Image();
-img.src = url;
-img.style.width = '270px';
-img.style.height = '480px';
-img.alt = 'Preview';
-img.id = 'imagenGenerada';
-previewContainer.appendChild(img);
-
-// Botones de compartir
-const compartirDiv = document.createElement('div');
-compartirDiv.style.marginTop = '15px';
-compartirDiv.style.display = 'flex';
-compartirDiv.style.gap = '15px';
-
-const btnWhatsapp = document.createElement('a');
-btnWhatsapp.href = `https://api.whatsapp.com/send?text=Mirá los horarios disponibles hoy en Don Balón 👉`;
-btnWhatsapp.target = '_blank';
-btnWhatsapp.innerHTML = `<i class="fa-brands fa-whatsapp" style="font-size:28px;color:#25D366;"></i>`;
-btnWhatsapp.title = "Compartir en WhatsApp";
-
-const btnInstagram = document.createElement('a');
-btnInstagram.href = `https://www.instagram.com/`;
-btnInstagram.target = '_blank';
-btnInstagram.innerHTML = `<i class="fa-brands fa-instagram" style="font-size:28px;color:#E1306C;"></i>`;
-btnInstagram.title = "Abrir Instagram para compartir";
-
-compartirDiv.appendChild(btnWhatsapp);
-compartirDiv.appendChild(btnInstagram);
-previewContainer.appendChild(compartirDiv);
-
+      const img = new Image();
+      img.src = url;
+      img.style.width = '270px';
+      img.style.height = '480px';
+      img.alt = 'Preview';
+      previewContainer.appendChild(img);
 
       boton.disabled = false;
       boton.textContent = 'Generar Imagen';
