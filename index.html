@@ -33,9 +33,29 @@
     .horarios-grid button {
       position: relative;
     }
+
+    #introVideo {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      z-index: 9999;
+      background: black;
+    }
+    #mainApp {
+      display: none;
+    }
   </style>
 </head>
 <body>
+
+  <!-- Video de introducción para móviles -->
+<video id="introVideo" playsinline autoplay muted>
+  <source src="AnimacionAppProCanchRapido.mp4" type="video/mp4">
+  Tu navegador no soporta videos HTML5.
+</video>
 
 <div id="contenedorOpcionesApp">
   <div id="tituloApp">
@@ -336,6 +356,28 @@ function generarImagen() {
     });
   });
 }
+</script>
+
+<script>
+  const esMovil = /Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+  window.addEventListener('load', () => {
+    const video = document.getElementById('introVideo');
+    const app = document.getElementById('mainApp');
+
+    if (esMovil) {
+      video.onended = mostrarApp;
+      setTimeout(mostrarApp, 5000);
+    } else {
+      mostrarApp();
+    }
+
+    function mostrarApp() {
+      video.style.display = 'none';
+      app.style.display = 'block';
+      document.body.style.overflow = 'auto';
+    }
+  });
 </script>
 
 <footer style="background:#f9f9f9;border-top:1px solid #ddd;padding:20px 10px;display:flex;justify-content:center;align-items:center;gap:15px;font-family:sans-serif;flex-direction:column;">
